@@ -1,22 +1,23 @@
-import cn from 'classnames'
-import { FC, useState } from 'react'
-import createRippleImpl from '../createRipple'
+import cn from 'classnames';
+import { FC, useMemo } from 'react';
+import createRippleImpl, { RippleConfig } from '../createRipple';
 
 type ButtonProps = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
 > & {
-    isLoading?: boolean
-}
+    isLoading?: boolean;
+    rippleConfig?: Partial<RippleConfig>;
+};
 
 const Loader = ({
     children,
     isLoading,
 }: {
-    children: React.ReactNode
-    isLoading?: boolean
+    children: React.ReactNode;
+    isLoading?: boolean;
 }) => {
-    if (isLoading === undefined) return children
+    if (isLoading === undefined) return children;
     return (
         <>
             <div
@@ -53,27 +54,35 @@ const Loader = ({
                 </svg>
             </span>
         </>
-    )
-}
+    );
+};
 
-const createRippleButton = createRippleImpl({
-    isCentered: false,
-})
-
-const Button: FC<ButtonProps> = ({ children, isLoading, ...props }) => {
-    const baseStyle = cn(
-        'p-2 bg-gray-500 text-white rounded-md overflow-hidden relative flex items-center justify-center',
-        props.className
-    )
+const Button: FC<ButtonProps> = ({
+    children,
+    isLoading,
+    rippleConfig,
+    ...props
+}) => {
+    const ripple = useMemo(
+        () => createRippleImpl(rippleConfig),
+        [rippleConfig]
+    );
     const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        createRippleButton(e)
-        props.onClick?.(e)
-    }
+        ripple(e);
+        props.onClick?.(e);
+    };
     return (
-        <button {...props} onClick={onClick} className={baseStyle}>
+        <button
+            {...props}
+            onClick={onClick}
+            className={cn(
+                'p-2 bg-blue-400 font-medium text-white rounded-md overflow-hidden relative flex items-center justify-center active:contrast-150',
+                props.className
+            )}
+        >
             <Loader isLoading={isLoading}>{children}</Loader>
         </button>
-    )
-}
+    );
+};
 
-export default Button
+export default Button;
