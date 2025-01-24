@@ -1,5 +1,6 @@
 import cn from 'classnames'
-import { FC } from 'react'
+import { FC, useState } from 'react'
+import createRippleImpl from '../createRipple'
 
 type ButtonProps = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -17,75 +18,55 @@ const Loader = ({
 }) => {
     if (isLoading === undefined) return children
     return (
-        <div className="flex items-center justify-center relative w-full h-full">
+        <>
             <div
-                className={
-                    'absolute left-2 w-4 h-4 border-2 border-t-white rounded-full animate-spin'
-                }
-            />
-            {children}
-        </div>
+                className={cn({
+                    'opacity-0': isLoading,
+                })}
+            >
+                {children}
+            </div>
+            <span
+                className={cn('absolute animate-spin h-5 w-5 ', {
+                    'opacity-0': !isLoading,
+                })}
+            >
+                <svg
+                    className="text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                >
+                    <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                    ></circle>
+                    <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8.003 8.003 0 014 12H0c0 6.627 5.373 12 12 12v-4z"
+                    ></path>
+                </svg>
+            </span>
+        </>
     )
 }
 
-const rippleID = 'ripple-container'
-
-const createRipple = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const target = e.currentTarget
-    const rect = target.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    let rippleElement = target.querySelector(`#${rippleID}`) as HTMLElement
-    if (!rippleElement) {
-        const buttonWidth = target.offsetWidth
-        const buttonHeight = target.offsetHeight
-        const containerAroundButton = Object.assign(
-            document.createElement('div'),
-            {
-                style: {
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: buttonWidth + 'px',
-                    height: buttonHeight + 'px',
-                },
-            }
-        )
-        containerAroundButton.id = rippleID
-        target.appendChild(containerAroundButton)
-        rippleElement = containerAroundButton
-    }
-    console.log({ rippleElement })
-    // requestAnimationFrame(() => {
-    //     const ripple = Object.assign(document.createElement('div'), {
-    //         style: {
-    //             position: 'absolute',
-    //             top: y + 'px',
-    //             left: x + 'px',
-    //             width: '0',
-    //             height: '0',
-    //             background: 'rgba(255, 255, 255, 0.3)',
-    //             borderRadius: '50%',
-    //             transform: 'translate(-50%, -50%)',
-    //             transition: 'width 0.5s, height 0.5s',
-    //         },
-    //     })
-    //     containerAroundButton.appendChild(ripple)
-    //     const size = Math.max(buttonWidth, buttonHeight) * 2
-    //     ripple.style.width = size + 'px'
-    //     ripple.style.height = size + 'px'
-    //     ripple.style.opacity = '0'
-    //     ripple.style.transition = 'width 0.5s, height 0.5s, opacity 0.5s'
-    //     setTimeout(() => {
-    //         containerAroundButton.remove()
-    //     }, 500)
-    // })
-}
+const createRippleButton = createRippleImpl({
+    isCentered: false,
+})
 
 const Button: FC<ButtonProps> = ({ children, isLoading, ...props }) => {
-    const baseStyle = cn('p-4 bg-blue-500 text-white rounded-md', props.className)
+    const baseStyle = cn(
+        'p-2 bg-gray-500 text-white rounded-md overflow-hidden relative flex items-center justify-center',
+        props.className
+    )
     const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        createRipple(e)
+        createRippleButton(e)
         props.onClick?.(e)
     }
     return (
