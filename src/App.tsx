@@ -1,5 +1,11 @@
+import Button from "./components/Button"
+
 function App() {
-    return <></>
+    return <>
+        <Button isLoading>
+            Click me
+        </Button>
+    </>
 }
 
 export default App
