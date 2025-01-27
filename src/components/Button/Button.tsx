@@ -57,6 +57,13 @@ const Loader = ({
     );
 };
 
+const baseStyle = cn(
+    'flex items-center justify-center',
+    'overflow-hidden relative',
+    'border-2 p-2 rounded-md font-medium',
+    'active:contrast-150'
+);
+
 const Button: FC<ButtonProps> = ({
     children,
     isLoading,
@@ -75,10 +82,9 @@ const Button: FC<ButtonProps> = ({
         <button
             {...props}
             onClick={onClick}
-            className={cn(
-                'p-2 bg-blue-400 font-medium text-white rounded-md overflow-hidden relative flex items-center justify-center active:contrast-150',
-                props.className
-            )}
+            className={cn(baseStyle, props.className, {
+                'pointer-events-none': props.disabled,
+            })}
         >
             <Loader isLoading={isLoading}>{children}</Loader>
         </button>
