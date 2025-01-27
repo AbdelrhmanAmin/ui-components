@@ -11,39 +11,18 @@ const DropdownCtx = createContext<API>({
 });
 
 const Dropdown = ({
-    isOpen,
-    onToggle,
     children,
     isOpenByDefault,
 }: {
-    isOpen?: boolean;
-    onToggle?: (isOpen: boolean) => void;
     children: React.ReactNode;
     isOpenByDefault?: boolean;
 }) => {
     const [open, setOpen] = useState(isOpenByDefault || false);
-    const ctx = {
-        get isOpen() {
-            const isMenuOpen =
-                isOpen === undefined || onToggle === undefined ? open : isOpen;
-            return isMenuOpen;
-        },
-        setIsOpen: (isOpen: boolean) => {
-            if (isOpen === undefined) {
-                setOpen(!open);
-            } else {
-                if (onToggle) {
-                    onToggle(isOpen);
-                }
-                setOpen(isOpen);
-            }
-        },
-    };
     return (
         <DropdownCtx.Provider
             value={{
-                isOpen: ctx.isOpen,
-                setIsOpen: ctx.setIsOpen,
+                isOpen: open,
+                setIsOpen: setOpen,
             }}
         >
             <div className="relative">{children}</div>

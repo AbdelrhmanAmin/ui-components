@@ -6,11 +6,6 @@ import { Button, Dropdown } from '../components/actions';
 const meta = {
     title: 'Dropdown',
     argTypes: {
-        isOpen: {
-            control: {
-                type: 'boolean',
-            },
-        },
         positionX: {
             control: {
                 type: 'inline-radio',
@@ -46,8 +41,8 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
-    render: ({ isOpen, positionX, positionY }) => (
-        <Dropdown isOpen={isOpen}>
+    render: ({ positionX, positionY }) => (
+        <Dropdown>
             <Dropdown.Trigger>Open</Dropdown.Trigger>
             <Dropdown.Content positionX={positionX} positionY={positionY}>
                 <div
