@@ -89,13 +89,28 @@ const DropDownContent = ({
     positionX?: PositionX;
     positionY?: PositionY;
 }) => {
-    const { isOpen } = useContext(DropdownCtx);
+    const { isOpen, setIsOpen } = useContext(DropdownCtx);
+    const ref = React.useRef<HTMLDivElement>(null);
+
     if (!isOpen) return null;
+
     const Wrapper = ({ children }: { children: React.ReactNode }) => {
         const stylePosition = handlePosition(positionX, positionY);
-
+        // handle click outside
+        useEffect(() => {
+            const handleClickOutside = (e: MouseEvent) => {
+                if (ref.current && !ref.current.contains(e.target as Node)) {
+                    setIsOpen(false);
+                }
+            };
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }, []);
         return (
             <div
+                ref={ref}
                 style={{
                     position: 'absolute',
                     ...stylePosition,
