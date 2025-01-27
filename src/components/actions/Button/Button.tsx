@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import { FC, useMemo } from 'react';
-import createRippleImpl, { RippleConfig } from '../createRipple';
+import createRippleImpl, { RippleConfig } from '../../createRipple';
 
 type ButtonProps = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -8,6 +8,7 @@ type ButtonProps = React.DetailedHTMLProps<
 > & {
     isLoading?: boolean;
     rippleConfig?: Partial<RippleConfig>;
+    disabled?: boolean;
 };
 
 const Loader = ({
@@ -29,7 +30,7 @@ const Loader = ({
             </div>
             <span
                 className={cn('absolute animate-spin h-5 w-5 ', {
-                    'opacity-0': !isLoading,
+                    hidden: !isLoading,
                 })}
             >
                 <svg
@@ -61,7 +62,7 @@ const baseStyle = cn(
     'flex items-center justify-center',
     'overflow-hidden relative',
     'border-2 p-2 rounded-md font-medium',
-    'active:contrast-150'
+    'active:contrast-150 transition-all'
 );
 
 const Button: FC<ButtonProps> = ({
@@ -83,8 +84,12 @@ const Button: FC<ButtonProps> = ({
             {...props}
             onClick={onClick}
             className={cn(baseStyle, props.className, {
-                'pointer-events-none': props.disabled,
+                'pointer-events-none opacity-60': props.disabled,
             })}
+            style={{
+                borderColor:
+                    'color-mix(in srgb, currentColor 60%, transparent)',
+            }}
         >
             <Loader isLoading={isLoading}>{children}</Loader>
         </button>

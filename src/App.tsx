@@ -1,11 +1,11 @@
-import Button from "./components/Button"
+import Button from './components/actions/Button';
 
 function App() {
-    return <>
-        <Button isLoading>
-            Click me
-        </Button>
-    </>
+    return (
+        <>
+            <Button isLoading>Click me</Button>
+        </>
+    );
 }
 
-export default App
+export default App;
