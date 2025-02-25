@@ -1,6 +1,7 @@
 import React from 'react';
 import createTriggerable from '../../core/Triggerable';
 import cn from 'classnames';
+import Button from '../Button';
 
 export type PositionY = 'top' | 'bottom';
 export type PositionX = 'left' | 'right';
@@ -17,7 +18,7 @@ const DropDownTrigger = ({
     const { isOpen } = useTrigger();
     return (
         <Trigger>
-            <div
+            <Button
                 className={cn(
                     'inline-flex items-center gap-2 cursor-pointer',
                     'p-2 bg-gray-600 text-white font-medium rounded-md',
@@ -42,7 +43,7 @@ const DropDownTrigger = ({
                         />
                     </svg>
                 </span>
-            </div>
+            </Button>
         </Trigger>
     );
 };

@@ -36,7 +36,6 @@ const createTriggerable = (displayName: string) => {
                 `Children must be a valid React element...type is ${typeof children}`
             );
         }
-
         return React.cloneElement(children as React.ReactElement, {
             onClick: () => setIsOpen(!isOpen),
         });
