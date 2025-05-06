@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import ContextMenu from '../components/display/ContextMenu'
-import Chevron from '../components/icons/Chevron'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = { title: 'ContextMenu', component: ContextMenu } as Meta

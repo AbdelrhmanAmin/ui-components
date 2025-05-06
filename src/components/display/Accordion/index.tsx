@@ -1,8 +1,9 @@
 import cn from 'classnames'
 import { AnimatePresence, motion } from 'motion/react'
 import { createContext, forwardRef, useContext, useState } from 'react'
-import { Button } from '../../actions'
+
 import { Shared } from '../../types'
+import Button from '../../actions/Button'
 
 const displayName = 'Accordion'
 
@@ -83,7 +84,13 @@ const Item = forwardRef(
 
         return (
             <ItemContext.Provider value={{ isActive, trigger }}>
-                <div ref={ref} className={cn('bg-background border-2 border-b-0 last-of-type:border-b-2 border-border', className)}>
+                <div
+                    ref={ref}
+                    className={cn(
+                        'bg-background border-2 border-b-0 last-of-type:border-b-2 border-border',
+                        className
+                    )}
+                >
                     {children}
                 </div>
             </ItemContext.Provider>

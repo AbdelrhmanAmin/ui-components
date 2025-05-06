@@ -1,10 +1,10 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { Button } from '../../actions'
-import { Shared } from '../../types'
-import createTriggerable from '../../core/Triggerable'
+
 import cn from 'classnames'
-import Chevron from '../../icons/Chevron'
+import Button from '../../actions/Button'
+import createTriggerable from '../../core/Triggerable'
 import Collapse from '../../icons/Collapse'
+import { Shared } from '../../types'
 
 const displayName = 'Collapsible'
 
@@ -22,7 +22,7 @@ const TriggerBase = ({ children, className }: Shared) => {
                 )}
             >
                 {children}
-                <Collapse className='ml-2' />
+                <Collapse className="ml-2" />
             </TriggerButton>
         </Trigger>
     )
