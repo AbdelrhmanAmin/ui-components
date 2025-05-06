@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { Button } from '../components/actions'
 import Accordion from '../components/display/Accordion'
+import Button from '../components/actions/Button'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -30,9 +30,7 @@ export const Primary: Story = {
     render: ({ type }) => (
         <Accordion type={type} className="w-fit">
             <Accordion.Item value="item-1">
-                <Accordion.Trigger>
-                    Open Accordion 
-                </Accordion.Trigger>
+                <Accordion.Trigger>Open Accordion</Accordion.Trigger>
                 <Accordion.Content>
                     <div
                         style={{

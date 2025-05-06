@@ -31,7 +31,9 @@ export const Primary: Story = {
                         <ContextMenu.Item>Sub Option 1</ContextMenu.Item>
                         <ContextMenu>
                             <ContextMenu.Trigger isSub>
-                                <ContextMenu.Item>Sub Option 2</ContextMenu.Item>
+                                <ContextMenu.Item>
+                                    Sub Option 2
+                                </ContextMenu.Item>
                             </ContextMenu.Trigger>
                             <ContextMenu.Content>
                                 <ContextMenu.Item>

@@ -117,6 +117,7 @@ const createTriggerable = (displayName: string) => {
         const root = Object.assign(Root, {
             Trigger: propTrigger || Trigger,
             Content: Content || (() => null),
+            useTrigger,
         })
         return root
     }

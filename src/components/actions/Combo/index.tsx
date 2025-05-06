@@ -2,7 +2,12 @@ import { AnimatePresence, motion } from 'motion/react'
 import React, { createContext, useContext, useMemo, useState } from 'react'
 import cn from '../../../utils/cn'
 
-const CommandCtx = createContext({
+const CommandCtx = createContext<{
+    search: string
+    setSearch: (search: string) => void
+    value: string
+    setValue: (value: string) => void
+}>({
     search: '',
     setSearch: (search: string) => {},
     value: '',

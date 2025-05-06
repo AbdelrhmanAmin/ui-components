@@ -8,9 +8,9 @@ import Collapse from '../../icons/Collapse'
 export type PositionY = 'top' | 'bottom'
 export type PositionX = 'left' | 'right'
 
-const { createRoot, Trigger, useTrigger } = createTriggerable('Dropdown')
+const { createRoot, Trigger, useTrigger } = createTriggerable('Panel')
 
-const DropDownTrigger = ({
+const PanelTrigger = ({
     children,
     className,
 }: {
@@ -39,7 +39,7 @@ const DropDownTrigger = ({
     )
 }
 
-const DropDownContent = ({
+const PanelContent = ({
     positionX = 'left',
     positionY = 'bottom',
     children,
@@ -88,9 +88,9 @@ const handlePosition = (x: PositionX, y: PositionY) => {
     return position
 }
 
-const DropDown = createRoot({
-    Trigger: DropDownTrigger,
-    Content: DropDownContent,
+const Panel = createRoot({
+    Trigger: PanelTrigger,
+    Content: PanelContent,
 })
 
-export default DropDown
+export default Panel

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-
-import { Button, Dropdown } from '../components/actions';
+import type { Meta, StoryObj } from '@storybook/react'
+import Panel from '../components/actions/Panel'
+import Button from '../components/actions/Button'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -33,19 +33,19 @@ const meta = {
             </div>
         ),
     ],
-} as Meta;
+} as Meta
 
-export default meta;
+export default meta
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof meta>
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
     name: 'Dropdown',
     render: ({ positionX, positionY }) => (
-        <Dropdown>
-            <Dropdown.Trigger>Open</Dropdown.Trigger>
-            <Dropdown.Content positionX={positionX} positionY={positionY}>
+        <Panel>
+            <Panel.Trigger>Open</Panel.Trigger>
+            <Panel.Content positionX={positionX} positionY={positionY}>
                 <div
                     style={{
                         display: 'flex',
@@ -62,7 +62,7 @@ export const Primary: Story = {
                     <Button className="bg-blue-400">Option 2</Button>
                     <Button className="bg-blue-400">Option 3</Button>
                 </div>
-            </Dropdown.Content>
-        </Dropdown>
+            </Panel.Content>
+        </Panel>
     ),
-};
+}
