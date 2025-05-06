@@ -1,9 +1,6 @@
-import React, { createContext, useContext, useMemo, useState } from 'react'
-import Dropdown from '../Dropdown'
 import { AnimatePresence, motion } from 'motion/react'
+import React, { createContext, useContext, useMemo, useState } from 'react'
 import cn from '../../../utils/cn'
-
-const ComboBox = Dropdown
 
 const CommandCtx = createContext({
     search: '',
@@ -15,11 +12,9 @@ const Command = ({ children }: { children: React.ReactNode }) => {
     const [search, setSearch] = useState('')
     const [value, setValue] = useState('')
     return (
-        <ComboBox.Content className="border border-border rounded-md bg-background">
-            <CommandCtx.Provider value={{ search, setSearch, value, setValue }}>
-                {children}
-            </CommandCtx.Provider>
-        </ComboBox.Content>
+        <CommandCtx.Provider value={{ search, setSearch, value, setValue }}>
+            {children}
+        </CommandCtx.Provider>
     )
 }
 
@@ -127,4 +122,4 @@ Command.Input = CommandInput
 Command.Group = CommandGroup
 Command.Item = CommandItem
 
-export { ComboBox, Command }
+export default Command
