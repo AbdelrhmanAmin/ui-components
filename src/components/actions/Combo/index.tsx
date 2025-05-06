@@ -44,14 +44,14 @@ const findMatchings = (
 ): JSX.Element[] => {
     return children.filter((child) => {
         if (child.type.displayName === CommandItem.displayName) {
-            const value = child.props.children
-            if (typeof value === 'string') {
-                return value.toLowerCase().includes(search?.toLowerCase())
-            }
-            return findMatchings(
-                React.Children.toArray(value) as JSX.Element[],
-                search
+            const keyword = findKeyword(
+                React.Children.toArray(
+                    child.props.children
+                ) as React.ReactNode[]
             )
+            if (keyword.toLowerCase().includes(search.toLowerCase())) {
+                return child
+            }
         }
         return false
     })
@@ -59,17 +59,45 @@ const findMatchings = (
 
 const CommandGroup = ({ children }: { children: JSX.Element[] }) => {
     const { search } = useContext(CommandCtx)
+    const initialChildren = useMemo(() => {
+        return React.Children.toArray(children) as JSX.Element[]
+    }, [])
     // traverse and nest the children till you find the command item
     const filteredChildren = useMemo(() => {
-        if (!search) return children
+        if (!search) return initialChildren
         const matchings = findMatchings(
-            React.Children.toArray(children) as JSX.Element[],
+            initialChildren as JSX.Element[],
             search
         )
         if (matchings.length === 0) return 'No results found...'
         return matchings
     }, [search])
-    return <ul className="p-2">{filteredChildren}</ul>
+    return (
+        <ul className="p-2 max-h-96 overflow-y-auto min-w-80">
+            {filteredChildren}
+        </ul>
+    )
+}
+
+const findKeyword = (children: React.ReactNode[]): string => {
+    for (const child of children) {
+        if (React.isValidElement(child)) {
+            const childValue = child.props.children
+            if (typeof childValue === 'string') {
+                return childValue
+            } else if (Array.isArray(childValue)) {
+                const found = findKeyword(
+                    React.Children.toArray(childValue) as React.ReactNode[]
+                )
+                if (found) return found
+            }
+        } else {
+            if (typeof child === 'string') {
+                return child
+            }
+        }
+    }
+    return ''
 }
 
 const CommandItem = ({
@@ -78,28 +106,32 @@ const CommandItem = ({
     ...props
 }: React.LiHTMLAttributes<HTMLLIElement>) => {
     const { value, setValue } = useContext(CommandCtx)
-    const itemValue = children?.toString()
-    const isActive = value ? itemValue?.toString().includes(value) : false
+    const keyword = useMemo(() => {
+        const itemValueArray = React.Children.toArray(children)
+        const found = findKeyword(itemValueArray)
+        const uuid = Math.random().toString(36).slice(2, 9)
+        return found + uuid
+    }, [])
+    const isActive = keyword === value
     return (
         <li
             {...props}
             className={cn(
-                'p-2 bg-black hover:bg-muted/20 rounded-md transition-colors flex justify-between items-center',
+                'p-2 bg-black hover:bg-muted/20 rounded-md transition-colors flex items-center',
                 'cursor-pointer',
                 className
             )}
             onClick={() => {
-                if (itemValue) {
-                    if (itemValue === value) return setValue('')
-                    setValue(itemValue)
-                }
+                if (keyword === value) setValue('')
+                else setValue(keyword as string)
             }}
+            aria-keyword={keyword}
         >
             {children}
             <AnimatePresence>
                 {isActive && (
                     <motion.span
-                        className="text-white"
+                        className="text-white ml-auto"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}

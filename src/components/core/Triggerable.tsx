@@ -4,7 +4,7 @@ import useClickOutside from '../utils/useClickOutside'
 
 type API = {
     isOpen: boolean
-    setIsOpen: (isOpen: boolean) => void
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
     meta: Record<string, any>
     setMeta: React.Dispatch<React.SetStateAction<Record<string, any>>>
     containerRef: React.RefObject<HTMLDivElement> | null
@@ -117,7 +117,7 @@ const createTriggerable = (displayName: string) => {
         const root = Object.assign(Root, {
             Trigger: propTrigger || Trigger,
             Content: Content || (() => null),
-            useTrigger,
+            ctx: CTX,
         })
         return root
     }

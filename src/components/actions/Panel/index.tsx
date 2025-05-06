@@ -52,7 +52,6 @@ const PanelContent = ({
 }) => {
     const { isOpen } = useTrigger()
     const stylePosition = handlePosition(positionX, positionY)
-
     return (
         <AnimatePresence>
             {isOpen && (
