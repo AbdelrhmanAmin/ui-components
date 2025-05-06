@@ -1,4 +1,4 @@
-import cn from "../../utils/cn";
+import cn from '../../utils/cn'
 
 const Collapse = (props: React.SVGProps<SVGSVGElement>) => (
     <svg

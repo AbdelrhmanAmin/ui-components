@@ -3,12 +3,12 @@ import createTriggerable from '../../core/Triggerable'
 import cn from 'classnames'
 import Button from '../Button'
 import { AnimatePresence, motion } from 'motion/react'
+import Collapse from '../../icons/Collapse'
 
 export type PositionY = 'top' | 'bottom'
 export type PositionX = 'left' | 'right'
 
-const { createRoot, Trigger, useTrigger } =
-    createTriggerable('Dropdown')
+const { createRoot, Trigger, useTrigger } = createTriggerable('Dropdown')
 
 const DropDownTrigger = ({
     children,
@@ -28,54 +28,47 @@ const DropDownTrigger = ({
                 )}
             >
                 {children}
-                <span>
-                    <svg
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        className={cn('h-6 w-6 transition-transform', {
-                            'rotate-180': isOpen,
-                        })}
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                        />
-                    </svg>
-                </span>
+                <Collapse
+                    className={cn('ml-2 transition-opacity', {
+                        'opacity-50': !isOpen,
+                        'opacity-100': isOpen,
+                    })}
+                />
             </Button>
         </Trigger>
     )
 }
 
 const DropDownContent = ({
-    children,
     positionX = 'left',
     positionY = 'bottom',
+    children,
+    className,
 }: {
-    children: React.ReactNode
     positionX?: PositionX
     positionY?: PositionY
+    children: React.ReactNode
+    className?: string
 }) => {
     const { isOpen } = useTrigger()
-    const Wrapper = ({ children }: { children: React.ReactNode }) => {
-        const stylePosition = handlePosition(positionX, positionY)
-        return (
-            <motion.div
-                initial={{ opacity: 0, y: -2 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -2 }}
-                style={{ position: 'absolute', ...stylePosition }}
-            >
-                {children}
-            </motion.div>
-        )
-    }
+    const stylePosition = handlePosition(positionX, positionY)
+
     return (
         <AnimatePresence>
-            {isOpen && <Wrapper>{children}</Wrapper>}
+            {isOpen && (
+                <motion.div
+                    initial={{ opacity: 0, y: -2 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -2 }}
+                    style={{
+                        position: 'absolute',
+                        ...stylePosition,
+                    }}
+                    className={cn(className)}
+                >
+                    {children}
+                </motion.div>
+            )}
         </AnimatePresence>
     )
 }
