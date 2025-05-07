@@ -72,11 +72,7 @@ const CommandGroup = ({ children }: { children: JSX.Element[] }) => {
         if (matchings.length === 0) return 'No results found...'
         return matchings
     }, [search])
-    return (
-        <ul className="p-2 max-h-96 overflow-y-auto min-w-80">
-            {filteredChildren}
-        </ul>
-    )
+    return <ul className="dropdown">{filteredChildren}</ul>
 }
 
 const findKeyword = (children: React.ReactNode[]): string => {
@@ -117,7 +113,7 @@ const CommandItem = ({
         <li
             {...props}
             className={cn(
-                'p-2 bg-black hover:bg-muted/20 rounded-md transition-colors flex items-center',
+                'item flex items-center',
                 'cursor-pointer',
                 className
             )}

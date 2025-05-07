@@ -53,7 +53,7 @@ const Commander = () => {
         return () => document.removeEventListener('keydown', down)
     }, [])
     return (
-        <Modal.Content className="border border-border rounded-md bg-background">
+        <Modal.Content className="bg-background">
             <Command>
                 <Command.Input placeholder="Search..." />
                 <Command.Group>

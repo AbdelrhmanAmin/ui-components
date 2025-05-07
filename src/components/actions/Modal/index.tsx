@@ -1,7 +1,7 @@
-import cn from 'classnames'
 import createTriggerable from '../../core/Triggerable'
 import { AnimatePresence, motion } from 'motion/react'
 import useClickOutside from '../../utils/useClickOutside'
+import cn from '../../../utils/cn'
 
 const { createRoot, Trigger, useTrigger } = createTriggerable('Modal')
 

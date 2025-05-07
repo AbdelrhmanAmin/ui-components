@@ -32,7 +32,7 @@ export const Primary: Story = {
     render: () => (
         <Panel>
             <Panel.Trigger>Search options 🔍</Panel.Trigger>
-            <Panel.Content className="border border-border rounded-md bg-background">
+            <Panel.Content className="list">
                 <Command>
                     <Command.Input placeholder="Search..." />
                     <Command.Group>

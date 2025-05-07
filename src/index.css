@@ -17,6 +17,19 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+@layer components {
+    .item {
+        @apply p-2 bg-black hover:bg-muted/20 rounded-md transition-colors;
+    }
+
+    .list {
+        @apply border border-border rounded-md bg-background;
+    }
+    .dropdown {
+        @apply p-2 max-h-96 overflow-y-auto min-w-80;
+    }
+}
+
 @keyframes ripple {
     to {
         transform: scale(4);
