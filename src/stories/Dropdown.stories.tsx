@@ -58,9 +58,9 @@ export const Primary: Story = {
                         width: '200px',
                     }}
                 >
-                    <Button className="bg-blue-400">Option 1</Button>
-                    <Button className="bg-blue-400">Option 2</Button>
-                    <Button className="bg-blue-400">Option 3</Button>
+                    <Button className="bg-accent">Option 1</Button>
+                    <Button className="bg-accent">Option 2</Button>
+                    <Button className="bg-accent">Option 3</Button>
                 </div>
             </Panel.Content>
         </Panel>

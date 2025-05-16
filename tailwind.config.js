@@ -1,4 +1,3 @@
-import { background } from 'storybook/internal/theming'
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -14,6 +13,7 @@ export default {
             colors: {
                 primary: '#18181b',
                 secondary: '#f8fafc',
+                accent: '#3b82f6',
                 background: 'black',
                 muted: '#a1a1aa',
                 border: '#484848',
