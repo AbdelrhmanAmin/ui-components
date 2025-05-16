@@ -1,8 +1,8 @@
-import Panel from '../../actions/Panel'
+import Panel from '../Panel'
 
 const Menubar = () => {
     return (
-        <div className="flex flex-row items-center justify-between w-full h-16 bg-gray-800 text-white p-4">
+        <div className="flex items-center border border-border bg-background rounded-md p-1 gap-x-1 w-fit">
             <MenubarItem title="File">
                 <div className="item">New</div>
                 <div className="item">Open</div>
@@ -35,7 +35,12 @@ const MenubarItem = ({
 }) => {
     return (
         <Panel>
-            <Panel.Trigger>{title}</Panel.Trigger>
+            <Panel.Trigger
+                isHoverable
+                className="rounded-md px-3 py-1 hover:bg-[#27272a]"
+            >
+                {title}
+            </Panel.Trigger>
             <Panel.Content className="list dropdown">{children}</Panel.Content>
         </Panel>
     )

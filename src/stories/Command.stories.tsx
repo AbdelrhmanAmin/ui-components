@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Command from '../components/actions/Combo'
-import Panel from '../components/actions/Panel'
+import Command from '../components/ui/Combo'
 import { useContext, useEffect } from 'react'
-import Modal from '../components/actions/Modal'
+import Modal from '../components/ui/Modal'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {

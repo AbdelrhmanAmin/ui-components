@@ -1,4 +1,4 @@
-import createTriggerable from '../../core/Triggerable'
+import createTriggerable from '../../utils/createTriggerable'
 import { AnimatePresence, motion } from 'motion/react'
 import useClickOutside from '../../utils/useClickOutside'
 import cn from '../../../utils/cn'

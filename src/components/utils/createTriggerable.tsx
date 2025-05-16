@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import React, { createContext, useContext, useMemo, useState } from 'react'
-import useClickOutside from '../utils/useClickOutside'
+import useClickOutside from './useClickOutside'
 
 type API = {
     isOpen: boolean
@@ -37,33 +37,35 @@ const createTriggerable = (displayName: string) => {
     const Trigger = ({
         children,
         className,
-    }: {
+        as: Component = 'div',
+        asChild = false,
+        ...props
+    }: React.HTMLAttributes<HTMLDivElement> & {
         children: React.ReactNode | ((props: Partial<API>) => React.ReactNode)
-        className?: string
+        as?: React.FC<any> | React.ElementType
+        asChild?: boolean
     }) => {
         const { isOpen, setIsOpen } = useContext(CTX)
         if (typeof children === 'function') {
             return children({ isOpen, setIsOpen })
         }
-        if (!React.isValidElement(children)) {
-            if (typeof children === 'string') {
-                return (
-                    <div
-                        role="button"
-                        onClick={() => setIsOpen(!isOpen)}
-                        className={className}
-                    >
-                        {children}
-                    </div>
-                )
-            }
-            throw new Error(
-                `Children must be a valid React element...type is ${typeof children}`
-            )
+
+        if (asChild) {
+            return React.cloneElement(children as React.ReactElement, {
+                onClick: () => setIsOpen(!isOpen),
+                ...props,
+            })
         }
-        return React.cloneElement(children as React.ReactElement, {
-            onClick: () => setIsOpen(!isOpen),
-        })
+        return (
+            <Component
+                role="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className={className}
+                {...props}
+            >
+                {children}
+            </Component>
+        )
     }
     Trigger.displayName = `Triggerable.Trigger`
 

@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { createContext, forwardRef, useContext, useState } from 'react'
 
 import { Shared } from '../../types'
-import Button from '../../actions/Button'
+import Button from '../Button'
 
 const displayName = 'Accordion'
 

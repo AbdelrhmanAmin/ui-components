@@ -2,7 +2,7 @@ import cn from 'classnames'
 import { FC, useMemo } from 'react'
 import createRippleImpl, { RippleConfig } from '../../utils/createRipple'
 
-type ButtonProps = React.DetailedHTMLProps<
+export type ButtonProps = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
 > & {

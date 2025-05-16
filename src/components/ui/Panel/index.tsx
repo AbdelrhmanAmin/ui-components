@@ -1,41 +1,71 @@
 import React from 'react'
-import createTriggerable from '../../core/Triggerable'
+import createTriggerable from '../../utils/createTriggerable'
 import cn from 'classnames'
 import Button from '../Button'
 import { AnimatePresence, motion } from 'motion/react'
 import Collapse from '../../icons/Collapse'
+import useMouseLeave from '../../utils/useMouseLeave'
 
 export type PositionY = 'top' | 'bottom'
 export type PositionX = 'left' | 'right'
 
 const { createRoot, Trigger, useTrigger } = createTriggerable('Panel')
 
-const PanelTrigger = ({
+const PanelTriggerBase = ({
     children,
     className,
-}: {
-    children: React.ReactNode
-    className?: string
+    isHoverable,
+    as = 'div',
+    ...props
+}: React.HTMLAttributes<HTMLElement> & {
+    isHoverable?: boolean
+    as?: React.ElementType | React.FC<any>
 }) => {
+    const { containerRef, setIsOpen } = useTrigger()
+    useMouseLeave({
+        ref: containerRef,
+        setOpen: setIsOpen,
+        disabled: !isHoverable,
+    })
+
+    return (
+        <Trigger
+            as={as}
+            className={cn(className)}
+            {...(isHoverable && {
+                onMouseEnter: () => setIsOpen(true),
+            })}
+            {...props}
+        >
+            {children}
+        </Trigger>
+    )
+}
+
+const PanelTriggerStyled = ({
+    children,
+    className,
+    ...props
+}: React.HTMLAttributes<HTMLElement>) => {
     const { isOpen } = useTrigger()
     return (
-        <Trigger>
-            <Button
-                className={cn(
-                    'inline-flex items-center gap-2 cursor-pointer',
-                    'p-2 bg-gray-600 text-white font-medium rounded-md',
-                    className
-                )}
-            >
-                {children}
-                <Collapse
-                    className={cn('ml-2 transition-opacity', {
-                        'opacity-50': !isOpen,
-                        'opacity-100': isOpen,
-                    })}
-                />
-            </Button>
-        </Trigger>
+        <PanelTriggerBase
+            as={Button}
+            className={cn(
+                'inline-flex items-center gap-2 cursor-pointer',
+                'p-2 bg-gray-600 text-white font-medium rounded-md',
+                className
+            )}
+            {...props}
+        >
+            {children}
+            <Collapse
+                className={cn('ml-2 transition-opacity', {
+                    'opacity-50': !isOpen,
+                    'opacity-100': isOpen,
+                })}
+            />
+        </PanelTriggerBase>
     )
 }
 
@@ -87,9 +117,14 @@ const handlePosition = (x: PositionX, y: PositionY) => {
     return position
 }
 
-const Panel = createRoot({
-    Trigger: PanelTrigger,
-    Content: PanelContent,
-})
+const Panel = Object.assign(
+    createRoot({
+        Trigger: PanelTriggerBase,
+        Content: PanelContent,
+    }),
+    {
+        StyledTrigger: PanelTriggerStyled,
+    }
+)
 
 export default Panel

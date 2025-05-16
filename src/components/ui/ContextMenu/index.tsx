@@ -1,9 +1,10 @@
 import cn from 'classnames'
 import { AnimatePresence, motion } from 'motion/react'
-import React, { useEffect } from 'react'
-import createTriggerable from '../../core/Triggerable'
+import React from 'react'
+import createTriggerable from '../../utils/createTriggerable'
 import Chevron from '../../icons/Chevron'
 import useClickOutside from '../../utils/useClickOutside'
+import useMouseLeave from '../../utils/useMouseLeave'
 
 const { Root, useTrigger } = createTriggerable('ContextMenu')
 
@@ -32,20 +33,11 @@ const Trigger: React.FC<
         setIsOpen(true)
     }
 
-    useEffect(() => {
-        const ref = containerRef?.current
-        if (!isSub || !ref) return
-        const handleMouseLeave = (e: MouseEvent) => {
-            console.log('mouseleave')
-            if (!ref.contains(e.relatedTarget as Node)) {
-                setIsOpen(false)
-            }
-        }
-        ref.addEventListener('mouseleave', handleMouseLeave)
-        return () => {
-            ref.removeEventListener('mouseleave', handleMouseLeave)
-        }
-    }, [])
+    useMouseLeave({
+        ref: containerRef,
+        setOpen: setIsOpen,
+        disabled: !isSub,
+    })
 
     const Tag = as || 'div'
     return (

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-const useClickOutside = (setOpen: Function) => {
+const useClickOutside = (setOpen: (state: boolean) => void) => {
     const ref = useRef<HTMLDivElement>(null)
     const handleClickOutside = (e: MouseEvent) => {
         const isContained = ref.current?.contains(e.target as Node)

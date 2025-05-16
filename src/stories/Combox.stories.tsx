@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import Command from '../components/actions/Combo'
-import Panel from '../components/actions/Panel'
+import Command from '../components/ui/Combo'
+import Panel from '../components/ui/Panel'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -31,7 +31,7 @@ export const Primary: Story = {
     name: 'Combobox',
     render: () => (
         <Panel>
-            <Panel.Trigger>Search options 🔍</Panel.Trigger>
+            <Panel.StyledTrigger>Search options 🔍</Panel.StyledTrigger>
             <Panel.Content className="list">
                 <Command>
                     <Command.Input placeholder="Search..." />

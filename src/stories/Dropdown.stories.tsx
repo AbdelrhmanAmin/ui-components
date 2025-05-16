@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Panel from '../components/actions/Panel'
-import Button from '../components/actions/Button'
+import Panel from '../components/ui/Panel'
+import Button from '../components/ui/Button'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -44,7 +44,7 @@ export const Primary: Story = {
     name: 'Dropdown',
     render: ({ positionX, positionY }) => (
         <Panel>
-            <Panel.Trigger>Open</Panel.Trigger>
+            <Panel.StyledTrigger>Open</Panel.StyledTrigger>
             <Panel.Content positionX={positionX} positionY={positionY}>
                 <div
                     style={{

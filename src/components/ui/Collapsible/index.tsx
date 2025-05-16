@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from 'motion/react'
 
 import cn from 'classnames'
-import Button from '../../actions/Button'
-import createTriggerable from '../../core/Triggerable'
+import Button from '../Button'
+import createTriggerable from '../../utils/createTriggerable'
 import Collapse from '../../icons/Collapse'
 import { Shared } from '../../types'
 
