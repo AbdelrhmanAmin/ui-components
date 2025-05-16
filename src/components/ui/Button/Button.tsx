@@ -2,10 +2,7 @@ import cn from 'classnames'
 import { FC, useMemo } from 'react'
 import createRippleImpl, { RippleConfig } from '../../utils/createRipple'
 
-export type ButtonProps = React.DetailedHTMLProps<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-> & {
+export type ButtonProps = React.ComponentProps<'button'> & {
     isLoading?: boolean
     rippleConfig?: Partial<RippleConfig>
     disabled?: boolean
