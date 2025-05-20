@@ -13,7 +13,7 @@ export default {
             colors: {
                 primary: '#18181b',
                 secondary: '#f8fafc',
-                accent: '#3b82f6',
+                accent: '#27272a',
                 background: 'black',
                 muted: '#a1a1aa',
                 border: '#484848',
