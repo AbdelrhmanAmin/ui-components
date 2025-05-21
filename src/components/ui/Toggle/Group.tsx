@@ -28,8 +28,10 @@ const ToggleGroup = ({
                 if (React.isValidElement(child)) {
                     const c = child as JSX.Element
                     const childProps = c.props
-                    const isToggle = c.type.displayName === 'Toggle'
-                    if (isToggle) {
+                    const isComponent =
+                        (c.type?.displayName as string)?.includes('Toggle') ||
+                        (c.type as string)?.includes('Toggle')
+                    if (isComponent) {
                         if (childProps.value === undefined) {
                             throw new Error(
                                 'ToggleGroup: Toggle must have a value prop'

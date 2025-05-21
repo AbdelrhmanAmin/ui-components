@@ -1,23 +1,25 @@
-import { forwardRef, useRef } from 'react'
+import React, { forwardRef } from 'react'
 import cn from '../../../utils/cn'
 import { AnimatePresence, motion } from 'motion/react'
 import useControllableState from '../../utils/useControllableState'
 
-type BasicProps = Omit<
-    React.ComponentPropsWithoutRef<'button'>,
-    'onChange' | 'value' | 'checked'
->
-type ToggleElement = React.ComponentRef<'button'>
-interface StandaloneToggleI extends BasicProps {
+type BasicProps = {
+    value?: string
     checked?: boolean
-    onChange?: (checked: boolean) => void
-    value?: never
+    onChange?: (value: string | boolean) => void
+    children: React.ReactNode
+    className?: string
 }
+type ToggleElement = React.ComponentRef<'button'>
 
-interface GroupedToggleI extends BasicProps {
-    value: string
-    onChange?: (value: string) => void
+type ToggleBaseProps = Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    'onChange' | 'value' | 'children' | 'checked'
+> & {
+    value?: string
     checked?: boolean
+    onChange?: (value: string | boolean) => void
+    children: React.ReactNode | ((checked?: boolean) => React.ReactNode)
 }
 
 const booleanize = (value?: unknown): boolean | 'unknown' => {
@@ -29,94 +31,48 @@ const booleanize = (value?: unknown): boolean | 'unknown' => {
     return 'unknown'
 }
 
-type ToggleProps = StandaloneToggleI | GroupedToggleI
-
-const StandaloneToggle = forwardRef<ToggleElement, StandaloneToggleI>(
-    ({ children, onChange, checked, ...props }, ref) => {
-        const [isChecked, setChecked] = useControllableState({
+const ToggleBase = forwardRef<ToggleElement, ToggleBaseProps>(
+    ({ children, checked, onChange, ...props }, ref) => {
+        const [isChecked, onActive] = useControllableState({
             value: checked,
             onChange,
             defaultValue: false,
         })
         return (
             <button
+                role="toggle"
                 {...props}
                 ref={ref}
                 type="button"
-                data-checked={booleanize(checked) === true ? 'on' : 'off'}
+                value={props.value}
+                data-checked={booleanize(isChecked) === true ? 'on' : 'off'}
                 data-disabled={props.disabled ? 'true' : 'false'}
                 onClick={() => {
-                    setChecked(!isChecked)
+                    onActive(!isChecked)
+                    onChange?.(props.value!)
                 }}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
-                        setChecked(!isChecked)
+                        onActive(!isChecked)
+                        onChange?.(props.value!)
                     }
                 }}
             >
-                {children}
-            </button>
-        )
-    }
-)
-StandaloneToggle.displayName = 'StandaloneToggle'
-
-const GroupedToggle = forwardRef<ToggleElement, GroupedToggleI>(
-    ({ children, onChange, value, checked, ...props }, ref) => {
-        return (
-            <button
-                {...props}
-                ref={ref}
-                type="button"
-                data-checked={booleanize(checked) === true ? 'on' : 'off'}
-                data-disabled={props.disabled ? 'true' : 'false'}
-                onClick={() => {
-                    onChange?.(value)
-                }}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        onChange?.(value)
-                    }
-                }}
-            >
-                {children}
+                {typeof children === 'function'
+                    ? children(isChecked)
+                    : children}
             </button>
         )
     }
 )
 
-GroupedToggle.displayName = 'GroupedToggle'
+ToggleBase.displayName = 'ToggleBase'
 
-const ToggableArea = forwardRef<ToggleElement, ToggleProps>(
-    ({ children, value, onChange, ...props }, ref) => {
-        if (value !== undefined) {
-            return (
-                <GroupedToggle
-                    ref={ref}
-                    {...props}
-                    onChange={onChange}
-                    value={value}
-                >
-                    {children}
-                </GroupedToggle>
-            )
-        }
-        return (
-            <StandaloneToggle ref={ref} {...props} onChange={onChange}>
-                {children}
-            </StandaloneToggle>
-        )
-    }
-)
-
-ToggableArea.displayName = 'ToggableArea'
-
-const Toggle = forwardRef<ToggleElement, ToggleProps>(
+const Toggle = forwardRef<ToggleElement, ToggleBaseProps>(
     ({ children, ...props }, ref) => {
         return (
-            <ToggableArea
+            <ToggleBase
                 ref={ref}
                 {...props}
                 className={cn(
@@ -126,50 +82,95 @@ const Toggle = forwardRef<ToggleElement, ToggleProps>(
                 )}
             >
                 {children}
-            </ToggableArea>
+            </ToggleBase>
         )
     }
 )
 
 Toggle.displayName = 'Toggle'
 
-const Checkbox = ({ children }: BasicProps) => {
-    const ref = useRef<HTMLButtonElement>(null)
+export const Checkbox = ({ children, ...props }: BasicProps) => {
     return (
-        <ToggableArea
-            ref={ref}
-            className='flex items-center gap-1 font-medium text-accent data-[checked="off"]:text-accent/40'
+        <ToggleBase
+            className='flex items-center gap-1 font-medium text-accent data-[checked="off"]:text-accent/40 group'
+            role="checkbox"
+            {...props}
         >
-            <AnimatePresence>
-                <span
-                    className={cn(
-                        'flex items-center justify-center w-4 h-4 rounded-sm',
-                        'data-[checked="on"]:bg-accent',
-                        'data-[checked="off"]:bg-accent/40'
-                    )}
-                >
-                    <motion.svg
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.5 }}
-                        transition={{ duration: 0.1 }}
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3 h-3 text-white"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <path d="M20 6L9 17l-5-5" />
-                    </motion.svg>
-                </span>
-            </AnimatePresence>
-            {children}
-        </ToggableArea>
+            {(checked) => (
+                <>
+                    <AnimatePresence>
+                        <span
+                            className={cn(
+                                'flex items-center justify-center w-4 h-4 rounded-sm',
+                                {
+                                    'bg-accent': checked,
+                                    'bg-accent/40': !checked,
+                                }
+                            )}
+                        >
+                            {checked && (
+                                <motion.svg
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    transition={{ duration: 0.1 }}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-3 h-3 text-white"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M20 6L9 17l-5-5" />
+                                </motion.svg>
+                            )}
+                        </span>
+                    </AnimatePresence>
+                    {children}
+                </>
+            )}
+        </ToggleBase>
     )
 }
+Checkbox.displayName = 'Toggle.Checkbox'
+export const Radio = ({ children, ...props }: BasicProps) => {
+    return (
+        <ToggleBase
+            {...props}
+            className={cn(
+                'flex items-center gap-1 font-medium text-accent data-[checked="off"]:text-accent/40',
+                props.className
+            )}
+            role="radio"
+        >
+            <span
+                className={cn(
+                    'flex items-center justify-center w-4 h-4 rounded-full transition-colors',
+                    {
+                        'bg-accent': props.checked,
+                        'bg-accent/40': !props.checked,
+                    }
+                )}
+            >
+                <AnimatePresence>
+                    {props.checked && (
+                        <motion.span
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.5 }}
+                            transition={{ duration: 0.1 }}
+                            className="w-2 h-2 bg-white/20 rounded-full"
+                        />
+                    )}
+                </AnimatePresence>
+            </span>
+
+            {children}
+        </ToggleBase>
+    )
+}
+Radio.displayName = 'Toggle.Radio'
 
 export default Toggle
-export { Checkbox }

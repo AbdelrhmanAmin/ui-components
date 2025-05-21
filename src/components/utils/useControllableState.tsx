@@ -16,14 +16,15 @@ const useControllableState = <T,>({
     const isControlled = value !== undefined
 
     const handleChange = (newValue: T) => {
+        if (onChange) {
+            // maybe they want to access the onChange event without controlling the component.
+            onChange(newValue)
+        }
         if (!isControlled) {
             return setState(newValue)
-        }
-        if (onChange) {
-            return onChange(newValue)
-        } else {
+        } else if (!onChange) {
             console.warn(
-                'Uncontrolled component, please provide an onChange handler'
+                'Warning: You are using a controlled component without an onChange handler. Please provide an onChange handler to update the state.'
             )
         }
     }
