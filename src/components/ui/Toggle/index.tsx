@@ -12,7 +12,7 @@ type BasicProps = {
 }
 type ToggleElement = React.ComponentRef<'button'>
 
-type ToggleBaseProps = Omit<
+export type ToggleBaseProps = Omit<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     'onChange' | 'value' | 'children' | 'checked'
 > & {
@@ -49,13 +49,11 @@ const ToggleBase = forwardRef<ToggleElement, ToggleBaseProps>(
                 data-disabled={props.disabled ? 'true' : 'false'}
                 onClick={() => {
                     onActive(!isChecked)
-                    onChange?.(props.value!)
                 }}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
                         onActive(!isChecked)
-                        onChange?.(props.value!)
                     }
                 }}
             >
@@ -161,7 +159,7 @@ export const Radio = ({ children, ...props }: BasicProps) => {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.5 }}
                             transition={{ duration: 0.1 }}
-                            className="w-2 h-2 bg-white/20 rounded-full"
+                            className="w-2 h-2 bg-muted rounded-full"
                         />
                     )}
                 </AnimatePresence>

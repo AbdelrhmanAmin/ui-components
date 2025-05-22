@@ -32,7 +32,7 @@ export const Primary: Story = {
     name: 'Command',
     render: () => (
         <Modal>
-            <strong>Press Ctrl + X</strong>
+            <strong className='text-accent'>Press Ctrl + X</strong>
             <Commander />
         </Modal>
     ),

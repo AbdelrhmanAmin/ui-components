@@ -1,10 +1,38 @@
-import React, { useState } from 'react'
+import React, { createContext, useState } from 'react'
+import Toggle, { ToggleBaseProps } from '.'
 
-const ToggleGroup = ({
+type ToggleOptionProps = Omit<ToggleBaseProps, 'value' | 'children'> & {
+    children: React.ReactNode
+    value: string
+}
+
+const ToggleOption = (props: ToggleOptionProps) => {
+    const GroupScope = React.useContext(CTX)
+    if (!GroupScope) {
+        throw new Error('ToggleOption must be used within a ToggleGroup')
+    }
+    const { value, onChange } = GroupScope
+    const isChecked = value?.includes(props.value)
+    return (
+        <Toggle
+            {...props}
+            checked={isChecked}
+            onChange={() => {
+                onChange(props.value)
+            }}
+        />
+    )
+}
+
+const CTX = createContext<
+    { value: string[]; onChange: (val: string) => void } | undefined
+>(undefined)
+
+const Group = ({
     children,
     type,
-}: {
-    children: Array<React.ReactElement<{ value: string }>>
+    ...props
+}: React.ComponentProps<'div'> & {
     type: 'single' | 'multiple'
 }) => {
     const [value, setValue] = useState<string[]>([])
@@ -13,49 +41,43 @@ const ToggleGroup = ({
         if (type === 'single') {
             setValue([val])
         } else {
-            setValue((prev) =>
-                prev.includes(val)
-                    ? prev.filter((v) => v !== val)
-                    : [...prev, val]
-            )
+            setValue((prev) => {
+                if (prev.includes(val)) {
+                    console.log('removing', val, 'from', prev)
+                    return prev.filter((v) => v !== val)
+                } else {
+                    return [...prev, val]
+                }
+            })
         }
     }
-
+    const context = { value, onChange: handleToggle }
     return (
-        <div role="group" aria-label="Toggle Group">
-            {React.Children.map(children, (child) => {
-                // I want to check if it has a displayName of Toggle
-                if (React.isValidElement(child)) {
-                    const c = child as JSX.Element
-                    const childProps = c.props
-                    const isComponent =
-                        (c.type?.displayName as string)?.includes('Toggle') ||
-                        (c.type as string)?.includes('Toggle')
-                    if (isComponent) {
-                        if (childProps.value === undefined) {
-                            throw new Error(
-                                'ToggleGroup: Toggle must have a value prop'
-                            )
+        <CTX.Provider value={context}>
+            <div {...props} role="group">
+                {React.Children.map(children, (child) => {
+                    if (React.isValidElement(child)) {
+                        if (child.props && 'value' in child.props) {
+                            const c = child as JSX.Element
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                            return React.cloneElement(c, {
+                                ...c.props,
+                                checked: !!(
+                                    typeof c.props.value === 'string' &&
+                                    value.includes(c.props.value as string)
+                                ),
+                                onChange: () => handleToggle(c.props.value as string),
+                            })
                         }
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                        return React.cloneElement(child, {
-                            ...childProps,
-                            checked: !!(
-                                typeof childProps.value === 'string' &&
-                                value.includes(childProps.value as string)
-                            ),
-                            onChange: handleToggle,
-                            disabled:
-                                childProps.disabled ||
-                                childProps.value === undefined,
-                        })
                     }
-                }
-                return child
-            })}
-        </div>
+                    return child
+                })}
+            </div>
+        </CTX.Provider>
     )
 }
 
-ToggleGroup.displayName = 'ToggleGroup'
-export default ToggleGroup
+Group.displayName = 'ToggleGroup'
+
+Group.Option = ToggleOption
+export default Group

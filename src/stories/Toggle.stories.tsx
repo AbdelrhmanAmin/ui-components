@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import Toggle, { Checkbox, Radio } from '../components/ui/Toggle'
-import ToggleGroup from '../components/ui/Toggle/Group'
+import Group from '../components/ui/Toggle/Group'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -26,32 +26,33 @@ export const CheckboxStory: Story = {
 
 export const ToggleGroupSingle: Story = {
     name: 'Single Toggle Group',
+
     render: () => (
-        <ToggleGroup type="single">
-            <Toggle value="1">Active</Toggle>
-            <Toggle value="2">Active</Toggle>
-            <Toggle value="3">Active</Toggle>
-        </ToggleGroup>
+        <Group type="single">
+            <Group.Option value="1">Active</Group.Option>
+            <Group.Option value="2">Active</Group.Option>
+            <Group.Option value="3">Active</Group.Option>
+        </Group>
     ),
 }
 export const ToggleGroupMultiple: Story = {
     name: 'Multiple Toggle Group',
     render: () => (
-        <ToggleGroup type="multiple">
-            <Toggle value="1">Active</Toggle>
-            <Toggle value="2">Active</Toggle>
-            <Toggle value="3">Active</Toggle>
-        </ToggleGroup>
+        <Group type="multiple">
+            <Group.Option value="1">Active</Group.Option>
+            <Group.Option value="2">Active</Group.Option>
+            <Group.Option value="3">Active</Group.Option>
+        </Group>
     ),
 }
 
 export const RadioGroup: Story = {
     name: 'Radio Group',
     render: () => (
-        <ToggleGroup type="single">
+        <Group type="single">
             <Radio value="1">Active</Radio>
             <Radio value="2">Active</Radio>
             <Radio value="3">Active</Radio>
-        </ToggleGroup>
+        </Group>
     ),
 }
