@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 interface UseControllableStateI<T> {
-    value?: T
+    value: T | undefined
     defaultValue?: T
     onChange?: (value: T) => void
 }
@@ -11,25 +11,22 @@ const useControllableState = <T,>({
     defaultValue,
     onChange,
 }: UseControllableStateI<T>) => {
-    const [state, setState] = useState<T | undefined>(defaultValue)
-
+    const [internalValue, setInternalValue] = useState(defaultValue as T)
     const isControlled = value !== undefined
-
     const handleChange = (newValue: T) => {
         if (onChange) {
-            // maybe they want to access the onChange event without controlling the component.
             onChange(newValue)
         }
         if (!isControlled) {
-            return setState(newValue)
-        } else if (!onChange) {
+            setInternalValue(newValue)
+        }
+        if (!onChange) {
             console.warn(
                 'Warning: You are using a controlled component without an onChange handler. Please provide an onChange handler to update the state.'
             )
         }
     }
-
-    return [isControlled ? value : state, handleChange] as const
+    return [isControlled ? value : internalValue, handleChange] as const
 }
 
 export default useControllableState

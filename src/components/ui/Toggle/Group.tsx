@@ -1,74 +1,147 @@
-import React, { createContext, useState } from 'react'
-import Toggle, { ToggleBaseProps } from '.'
+import React, { createContext } from 'react'
+import Toggle, { TOGGLE_BASE, ToggleBaseProps } from '.'
+import { motion } from 'motion/react'
+import { AnimatePresence } from 'motion/react'
+import cn from '../../../utils/cn'
+import useControllableState from '../../utils/useControllableState'
 
-type ToggleOptionProps = Omit<ToggleBaseProps, 'value' | 'children'> & {
+type ToggleOptionProps = Omit<ToggleBaseProps, 'children' | 'onChange'> & {
     children: React.ReactNode
     value: string
+    ref?: React.RefObject<HTMLButtonElement>
 }
 
-const ToggleOption = (props: ToggleOptionProps) => {
+const useGroupProps = <T extends ToggleOptionProps>(props: T) => {
     const GroupScope = React.useContext(CTX)
     if (!GroupScope) {
         throw new Error('ToggleOption must be used within a ToggleGroup')
     }
     const { value, onChange } = GroupScope
     const isChecked = value?.includes(props.value)
-    return (
-        <Toggle
-            {...props}
-            checked={isChecked}
-            onChange={() => {
-                onChange(props.value)
-            }}
-        />
-    )
+    return {
+        ...props,
+        checked: isChecked,
+        onChange: () => onChange(props.value),
+    }
 }
 
-const CTX = createContext<
-    { value: string[]; onChange: (val: string) => void } | undefined
->(undefined)
+const ToggleOption = (props: ToggleOptionProps) => {
+    const args = useGroupProps(props)
+    return <Toggle {...args} />
+}
+
+const Radio = (
+    props: ToggleOptionProps & {
+        markClassName?: string
+        markStyle?: React.CSSProperties
+    }
+) => {
+    const { children, markClassName, markStyle, ...args } = useGroupProps(props)
+    return (
+        <TOGGLE_BASE
+            {...args}
+            className={cn(
+                'flex items-center gap-1 font-medium text-accent data-[checked="off"]:text-accent/40',
+                args.className
+            )}
+            role="radio"
+        >
+            <span
+                className={cn(
+                    'flex items-center justify-center w-4 h-4 rounded-full transition-colors border-2 border-accent bg-white/10'
+                )}
+            >
+                <AnimatePresence>
+                    {args.checked && (
+                        <motion.span
+                            className={cn(
+                                'w-2 h-2 bg-accent rounded-full',
+                                markClassName
+                            )}
+                            style={markStyle}
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.5 }}
+                            transition={{ duration: 0.1 }}
+                        />
+                    )}
+                </AnimatePresence>
+            </span>
+
+            {children}
+        </TOGGLE_BASE>
+    )
+}
+Radio.displayName = 'Toggle.Radio'
+
+type GroupContextReturn = {
+    value: string | string[]
+    onChange: (val: string) => void
+}
+
+const CTX = createContext<GroupContextReturn | undefined>(undefined)
+
+type IsPropsControlled<Type extends 'single' | 'multiple'> =
+    | {
+          value: Type extends 'single' ? string : string[]
+          onChange: (val: Type extends 'single' ? string : string[]) => void
+          defaultValue?: Type extends 'single' ? string : string[] // optional
+      }
+    | {
+          value?: never
+          onChange?: never
+          defaultValue?: Type extends 'single' ? string : string[] // optional because it's uncontrolled
+      }
+
+type PropsMappedByType =
+    | ({
+          type: 'single'
+      } & IsPropsControlled<'single'>)
+    | ({
+          type: 'multiple'
+      } & IsPropsControlled<'multiple'>)
 
 const Group = ({
     children,
-    type,
+    type = 'single',
+    onChange,
     ...props
-}: React.ComponentProps<'div'> & {
-    type: 'single' | 'multiple'
-}) => {
-    const [value, setValue] = useState<string[]>([])
+}: Omit<React.ComponentProps<'div'>, 'onChange' | 'value' | 'defaultValue'> &
+    PropsMappedByType) => {
+    const [picks, setPicks] = useControllableState<string | string[]>({
+        value: props.value,
+        defaultValue: props.defaultValue || '',
+        onChange: onChange as (val: string | string[]) => void,
+    })
 
-    const handleToggle = (val: string) => {
+    const handleToggle = (newPick: string) => {
         if (type === 'single') {
-            setValue([val])
+            setPicks(newPick as string)
         } else {
-            setValue((prev) => {
-                if (prev.includes(val)) {
-                    console.log('removing', val, 'from', prev)
-                    return prev.filter((v) => v !== val)
+            if (!picks || !Array.isArray(picks)) void setPicks([newPick])
+            if (Array.isArray(picks)) {
+                if (picks.includes(newPick)) {
+                    void setPicks(picks.filter((pick) => pick !== newPick))
                 } else {
-                    return [...prev, val]
+                    void setPicks([...picks, newPick])
                 }
-            })
+            }
         }
     }
-    const context = { value, onChange: handleToggle }
+
+    const context: GroupContextReturn = { value: picks, onChange: handleToggle }
     return (
         <CTX.Provider value={context}>
             <div {...props} role="group">
                 {React.Children.map(children, (child) => {
-                    if (React.isValidElement(child)) {
-                        if (child.props && 'value' in child.props) {
-                            const c = child as JSX.Element
-                            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                            return React.cloneElement(c, {
-                                ...c.props,
-                                checked: !!(
-                                    typeof c.props.value === 'string' &&
-                                    value.includes(c.props.value as string)
-                                ),
-                                onChange: () => handleToggle(c.props.value as string),
-                            })
-                        }
+                    if (React.isValidElement(child) && child.props?.value) {
+                        return React.cloneElement(child, {
+                            ...child.props,
+                            checked:
+                                typeof child.props.value === 'string' &&
+                                picks?.includes(child.props.value),
+                            onChange: () => handleToggle(child.props.value),
+                        })
                     }
                     return child
                 })}
@@ -79,5 +152,6 @@ const Group = ({
 
 Group.displayName = 'ToggleGroup'
 
-Group.Option = ToggleOption
+Group.Toggle = ToggleOption
+Group.Radio = Radio
 export default Group

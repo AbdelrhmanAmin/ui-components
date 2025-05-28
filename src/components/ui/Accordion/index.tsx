@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import { AnimatePresence, motion } from 'motion/react'
-import { createContext, forwardRef, useContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 import { Shared } from '../../types'
 import Button from '../Button'
@@ -66,37 +66,34 @@ const Root = ({
 }
 Root.displayName = displayName
 
-const Item = forwardRef(
-    (
-        {
-            children,
-            value,
-            className,
-        }: Shared & {
-            value: string
-        },
-        ref: React.Ref<HTMLDivElement>
-    ) => {
-        const { activeItems, setActiveItem } = useContext(GlobalContext)
-        const trigger = () => setActiveItem(value)
+const Item = ({
+    children,
+    value,
+    className,
+    ref,
+}: Shared & {
+    value: string
+    ref?: React.RefObject<HTMLDivElement>
+}) => {
+    const { activeItems, setActiveItem } = useContext(GlobalContext)
+    const trigger = () => setActiveItem(value)
 
-        const isActive = activeItems[value] || false
+    const isActive = activeItems[value] || false
 
-        return (
-            <ItemContext.Provider value={{ isActive, trigger }}>
-                <div
-                    ref={ref}
-                    className={cn(
-                        'bg-background border-2 border-b-0 last-of-type:border-b-2 border-border',
-                        className
-                    )}
-                >
-                    {children}
-                </div>
-            </ItemContext.Provider>
-        )
-    }
-)
+    return (
+        <ItemContext.Provider value={{ isActive, trigger }}>
+            <div
+                ref={ref}
+                className={cn(
+                    'bg-background border-2 border-b-0 last-of-type:border-b-2 border-border',
+                    className
+                )}
+            >
+                {children}
+            </div>
+        </ItemContext.Provider>
+    )
+}
 
 Item.displayName = displayName + '.Item'
 
