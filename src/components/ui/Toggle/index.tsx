@@ -3,14 +3,6 @@ import cn from '../../../utils/cn'
 import { AnimatePresence, motion } from 'motion/react'
 import useControllableState from '../../utils/useControllableState'
 
-type BasicProps = {
-    value?: string
-    checked?: boolean
-    onChange?: (value: string | boolean) => void
-    children: React.ReactNode
-    className?: string
-}
-
 export type ToggleBaseProps = Omit<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     'onChange' | 'value' | 'children' | 'checked'
@@ -131,11 +123,30 @@ const Toggle = ({ children, ref, ...props }: ToggleBaseProps) => {
 
 Toggle.displayName = 'Toggle'
 
-export const Checkbox = ({ children, ...props }: BasicProps) => {
+type CheckboxProps = {
+    value?: string
+    checked?: boolean
+    onChange?: (value: string | boolean) => void
+    children: React.ReactNode
+    className?: string
+    ref?: React.RefObject<HTMLButtonElement>
+}
+
+export type SharedMarkProps = {
+    markClassName?: string
+    markStyle?: React.CSSProperties
+}
+
+export const Checkbox = ({
+    children,
+    ref,
+    ...props
+}: CheckboxProps & SharedMarkProps) => {
     return (
         <TOGGLE_BASE
             className='flex items-center gap-1 font-medium text-accent data-[checked="off"]:text-accent/40 group'
             role="checkbox"
+            ref={ref}
             {...props}
         >
             {(checked) => (
@@ -147,8 +158,10 @@ export const Checkbox = ({ children, ...props }: BasicProps) => {
                                 {
                                     'bg-accent': checked,
                                     'bg-accent/40': !checked,
-                                }
+                                },
+                                props.markClassName
                             )}
+                            style={props.markStyle}
                         >
                             {checked && (
                                 <motion.svg

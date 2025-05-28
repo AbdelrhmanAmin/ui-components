@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import Toggle, { Checkbox } from '../components/ui/Toggle'
 import Group from '../components/ui/Toggle/Group'
 import { useState } from 'react'
+import cn from '../utils/cn'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -22,7 +23,9 @@ export const ToggleStory: Story = {
 
 export const CheckboxStory: Story = {
     name: 'Checkbox',
-    render: () => <Checkbox>Active</Checkbox>,
+    render: () => (
+        <Checkbox markClassName="data-[checked=on]:bg-red-500">Active</Checkbox>
+    ),
 }
 
 export const ToggleGroupSingle: Story = {
@@ -30,10 +33,36 @@ export const ToggleGroupSingle: Story = {
     render: () => {
         const [value, setValue] = useState<string>('1')
         return (
-            <Group type="single" value={value} onChange={(v) => setValue(v)}>
-                <Group.Toggle value="1">Active</Group.Toggle>
-                <Group.Toggle value="2">Active</Group.Toggle>
-                <Group.Toggle value="3">Active</Group.Toggle>
+            <Group
+                type="single"
+                value={value}
+                onChange={(v) => setValue(v)}
+                className="flex gap-2"
+            >
+                <Group.Toggle
+                    value="1"
+                    className={cn({
+                        '!bg-red-500': value === '1',
+                    })}
+                >
+                    Red
+                </Group.Toggle>
+                <Group.Toggle
+                    value="2"
+                    className={cn({
+                        '!bg-yellow-500': value === '2',
+                    })}
+                >
+                    Yellow
+                </Group.Toggle>
+                <Group.Toggle
+                    value="3"
+                    className={cn({
+                        '!bg-green-500': value === '3',
+                    })}
+                >
+                    Green
+                </Group.Toggle>
             </Group>
         )
     },
@@ -41,16 +70,24 @@ export const ToggleGroupSingle: Story = {
 export const ToggleGroupMultiple: Story = {
     name: 'Multiple Toggle Group',
     render: () => {
-
         return (
             <Group type="multiple" className="flex gap-2">
-                <Group.Toggle value="1" className="data-[checked=on]:bg-red-400">
+                <Group.Toggle
+                    value="1"
+                    className="data-[checked=on]:bg-red-400"
+                >
                     Red
                 </Group.Toggle>
-                <Group.Toggle value="2" className="data-[checked=on]:bg-yellow-500">
+                <Group.Toggle
+                    value="2"
+                    className="data-[checked=on]:bg-yellow-500"
+                >
                     Yellow
                 </Group.Toggle>
-                <Group.Toggle value="3" className="data-[checked=on]:bg-green-600">
+                <Group.Toggle
+                    value="3"
+                    className="data-[checked=on]:bg-green-600"
+                >
                     Green
                 </Group.Toggle>
             </Group>
@@ -71,7 +108,10 @@ export const RadioGroup: Story = {
             >
                 Yellow
             </Group.Radio>
-            <Group.Radio value="3" markClassName="data-[checked=on]:bg-green-600">
+            <Group.Radio
+                value="3"
+                markClassName="data-[checked=on]:bg-green-600"
+            >
                 Green
             </Group.Radio>
         </Group>

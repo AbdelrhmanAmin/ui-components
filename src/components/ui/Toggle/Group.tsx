@@ -1,5 +1,5 @@
 import React, { createContext } from 'react'
-import Toggle, { TOGGLE_BASE, ToggleBaseProps } from '.'
+import Toggle, { SharedMarkProps, TOGGLE_BASE, ToggleBaseProps } from '.'
 import { motion } from 'motion/react'
 import { AnimatePresence } from 'motion/react'
 import cn from '../../../utils/cn'
@@ -30,12 +30,7 @@ const ToggleOption = (props: ToggleOptionProps) => {
     return <Toggle {...args} />
 }
 
-const Radio = (
-    props: ToggleOptionProps & {
-        markClassName?: string
-        markStyle?: React.CSSProperties
-    }
-) => {
+const Radio = (props: ToggleOptionProps & SharedMarkProps) => {
     const { children, markClassName, markStyle, ...args } = useGroupProps(props)
     return (
         <TOGGLE_BASE
