@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import React, { Children, memo } from 'react'
 import cn from '../../../utils/cn'
 import { AnimatePresence, motion } from 'motion/react'
 import useControllableState from '../../utils/useControllableState'
@@ -53,17 +53,21 @@ const traverseChildren = (
         return child
     })
 }
-const DataAttributeDecorator = ({
-    children,
-    checked,
-}: {
-    children: React.ReactNode
-    checked: boolean
-}) => {
-    // loop through children and add data-checked attribute to each child
-    return traverseChildren(children, checked)
-}
-
+const DataAttributeDecorator = memo(
+    ({
+        children,
+        checked,
+    }: {
+        children: React.ReactNode
+        checked: boolean
+    }) => {
+        // loop through children and add data-checked attribute to each child
+        return traverseChildren(children, checked)
+    },
+    (prevProps, nextProps) => {
+        return prevProps.checked === nextProps.checked
+    }
+)
 export const TOGGLE_BASE = ({
     children,
     checked,

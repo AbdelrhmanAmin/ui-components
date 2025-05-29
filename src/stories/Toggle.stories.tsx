@@ -18,7 +18,24 @@ type Story = StoryObj<typeof meta>
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const ToggleStory: Story = {
     name: 'Toggle',
-    render: () => <Toggle>Active</Toggle>,
+    render: () => (
+        <Toggle>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="data-[checked=on]:opacity-100 text-yellow-500 data-[checked=off]:opacity-50"
+            >
+                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+            </svg>
+        </Toggle>
+    ),
 }
 
 export const CheckboxStory: Story = {

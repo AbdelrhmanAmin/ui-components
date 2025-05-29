@@ -3,7 +3,7 @@ import { useState } from 'react'
 interface UseControllableStateI<T> {
     value: T | undefined
     defaultValue?: T
-    onChange?: (value: T) => void
+    onChange?: (value: any) => void
 }
 
 const useControllableState = <T,>({

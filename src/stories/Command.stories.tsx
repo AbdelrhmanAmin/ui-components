@@ -53,7 +53,7 @@ const Commander = () => {
     }, [])
     return (
         <Modal.Content className="bg-background">
-            <Command>
+            <Command type="multiple" defaultValue={['Files']}>
                 <Command.Input placeholder="Search..." />
                 <Command.Group>
                     <Command.Item>

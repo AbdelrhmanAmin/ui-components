@@ -1,23 +1,50 @@
 import { AnimatePresence, motion } from 'motion/react'
 import React, { createContext, useContext, useMemo, useState } from 'react'
 import cn from '../../../utils/cn'
+import useControllableState from '../../utils/useControllableState'
+import { PropsMappedByType } from '../../types'
 
-const CommandCtx = createContext<{
+interface CommandContext {
     search: string
     setSearch: (search: string) => void
-    value: string
-    setValue: (value: string) => void
-}>({
+    value: string | string[]
+    setValue: (value: string | string[]) => void
+    type: 'single' | 'multiple'
+}
+
+const CommandCtx = createContext<CommandContext>({
     search: '',
-    setSearch: (search: string) => {},
+    setSearch: () => {},
     value: '',
-    setValue: (value: string) => {},
+    setValue: () => {},
+    type: 'single',
 })
-const Command = ({ children }: { children: React.ReactNode }) => {
+
+const Command = ({
+    children,
+    onChange,
+    value,
+    defaultValue,
+    type = 'single',
+}: {
+    children: React.ReactNode
+} & PropsMappedByType) => {
     const [search, setSearch] = useState('')
-    const [value, setValue] = useState('')
+    const [internalValue, submit] = useControllableState<string | string[]>({
+        value,
+        defaultValue,
+        onChange,
+    })
     return (
-        <CommandCtx.Provider value={{ search, setSearch, value, setValue }}>
+        <CommandCtx.Provider
+            value={{
+                search,
+                setSearch,
+                value: internalValue,
+                setValue: submit,
+                type,
+            }}
+        >
             {children}
         </CommandCtx.Provider>
     )
@@ -101,14 +128,15 @@ const CommandItem = ({
     className,
     ...props
 }: React.LiHTMLAttributes<HTMLLIElement>) => {
-    const { value, setValue } = useContext(CommandCtx)
+    const { value, setValue, type } = useContext(CommandCtx)
     const keyword = useMemo(() => {
         const itemValueArray = React.Children.toArray(children)
         const found = findKeyword(itemValueArray)
-        const uuid = Math.random().toString(36).slice(2, 9)
-        return found + uuid
+        return found
     }, [])
-    const isActive = keyword === value
+    const isActive =
+        (keyword === value && type === 'single') ||
+        (Array.isArray(value) && value.includes(keyword))
     return (
         <li
             {...props}
@@ -118,9 +146,22 @@ const CommandItem = ({
                 className
             )}
             onClick={() => {
-                if (keyword === value) setValue('')
-                else setValue(keyword as string)
+                if (type === 'single') {
+                    if (keyword === value) setValue('')
+                    else setValue(keyword as string)
+                } else {
+                    if (Array.isArray(value)) {
+                        if (value.includes(keyword as string)) {
+                            setValue(value.filter((item) => item !== keyword))
+                        } else {
+                            setValue([...value, keyword as string])
+                        }
+                    } else {
+                        setValue([keyword as string])
+                    }
+                }
             }}
+            data-checked={isActive ? 'on' : 'off'}
             aria-keyword={keyword}
         >
             {children}

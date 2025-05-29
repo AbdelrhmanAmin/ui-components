@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 import { AnimatePresence } from 'motion/react'
 import cn from '../../../utils/cn'
 import useControllableState from '../../utils/useControllableState'
+import { PropsMappedByType } from '../../types'
 
 type ToggleOptionProps = Omit<ToggleBaseProps, 'children' | 'onChange'> & {
     children: React.ReactNode
@@ -11,7 +12,7 @@ type ToggleOptionProps = Omit<ToggleBaseProps, 'children' | 'onChange'> & {
     ref?: React.RefObject<HTMLButtonElement>
 }
 
-const useGroupProps = <T extends ToggleOptionProps>(props: T) => {
+const useMergeGroupProps = <T extends ToggleOptionProps>(props: T) => {
     const GroupScope = React.useContext(CTX)
     if (!GroupScope) {
         throw new Error('ToggleOption must be used within a ToggleGroup')
@@ -26,12 +27,12 @@ const useGroupProps = <T extends ToggleOptionProps>(props: T) => {
 }
 
 const ToggleOption = (props: ToggleOptionProps) => {
-    const args = useGroupProps(props)
+    const args = useMergeGroupProps(props)
     return <Toggle {...args} />
 }
 
 const Radio = (props: ToggleOptionProps & SharedMarkProps) => {
-    const { children, markClassName, markStyle, ...args } = useGroupProps(props)
+    const { children, markClassName, markStyle, ...args } = useMergeGroupProps(props)
     return (
         <TOGGLE_BASE
             {...args}
@@ -76,25 +77,6 @@ type GroupContextReturn = {
 
 const CTX = createContext<GroupContextReturn | undefined>(undefined)
 
-type IsPropsControlled<Type extends 'single' | 'multiple'> =
-    | {
-          value: Type extends 'single' ? string : string[]
-          onChange: (val: Type extends 'single' ? string : string[]) => void
-          defaultValue?: Type extends 'single' ? string : string[] // optional
-      }
-    | {
-          value?: never
-          onChange?: never
-          defaultValue?: Type extends 'single' ? string : string[] // optional because it's uncontrolled
-      }
-
-type PropsMappedByType =
-    | ({
-          type: 'single'
-      } & IsPropsControlled<'single'>)
-    | ({
-          type: 'multiple'
-      } & IsPropsControlled<'multiple'>)
 
 const Group = ({
     children,
@@ -106,7 +88,7 @@ const Group = ({
     const [picks, setPicks] = useControllableState<string | string[]>({
         value: props.value,
         defaultValue: props.defaultValue || '',
-        onChange: onChange as (val: string | string[]) => void,
+        onChange: onChange,
     })
 
     const handleToggle = (newPick: string) => {
