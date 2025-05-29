@@ -3,24 +3,27 @@ import React, { createContext, useContext, useMemo, useState } from 'react'
 import cn from '../../../utils/cn'
 import useControllableState from '../../utils/useControllableState'
 import { PropsMappedByType } from '../../types'
+import comparison, { findInArray } from '../../utils/comparison'
 
-interface CommandContext {
+interface CommandContext<T> {
     search: string
     setSearch: (search: string) => void
-    value: string | string[]
-    setValue: (value: string | string[]) => void
+    picks: T | T[]
+    select: (value: T) => void
     type: 'single' | 'multiple'
+    findIsActive: (pick: T) => boolean
 }
 
-const CommandCtx = createContext<CommandContext>({
+const CommandCtx = createContext<CommandContext<any>>({
     search: '',
     setSearch: () => {},
-    value: '',
-    setValue: () => {},
-    type: 'single',
+    picks: [],
+    select: () => {},
+    type: 'multiple',
+    findIsActive: () => false,
 })
 
-const Command = ({
+const Command = <T,>({
     children,
     onChange,
     value,
@@ -28,21 +31,61 @@ const Command = ({
     type = 'single',
 }: {
     children: React.ReactNode
-} & PropsMappedByType) => {
+} & PropsMappedByType<T, T[]>) => {
     const [search, setSearch] = useState('')
-    const [internalValue, submit] = useControllableState<string | string[]>({
+    const [picks, submit] = useControllableState<T | T[]>({
         value,
-        defaultValue,
+        defaultValue: defaultValue,
         onChange,
     })
+    const findIsActive = (pick: T) => {
+        if (
+            !picks ||
+            picks === '' ||
+            (Array.isArray(picks) && picks.length === 0)
+        )
+            return false
+        if (type === 'single') {
+            return comparison(pick, picks)
+        } else {
+            return findInArray(picks as T[], pick)
+        }
+    }
+    const select = (pick: T) => {
+        const toRemove = findIsActive(pick)
+        // setup the value
+        if (!picks) {
+            if (type === 'single') {
+                submit(pick)
+            } else {
+                submit([pick])
+            }
+        }
+        if (type === 'single') {
+            if (toRemove) {
+                submit('' as T)
+            } else {
+                submit(pick)
+            }
+        } else {
+            if (Array.isArray(picks)) {
+                if (toRemove) {
+                    submit(picks.filter((item) => !comparison(item, pick)))
+                } else {
+                    submit([...picks, pick])
+                }
+            }
+        }
+    }
     return (
         <CommandCtx.Provider
             value={{
                 search,
                 setSearch,
-                value: internalValue,
-                setValue: submit,
+                picks,
+                select,
                 type,
+                findIsActive,
             }}
         >
             {children}
@@ -106,7 +149,9 @@ const findKeyword = (children: React.ReactNode[]): string => {
     for (const child of children) {
         if (React.isValidElement(child)) {
             const childValue = child.props.children
-            if (typeof childValue === 'string') {
+            if (child.props.value) {
+                return child.props.value
+            } else if (typeof childValue === 'string') {
                 return childValue
             } else if (Array.isArray(childValue)) {
                 const found = findKeyword(
@@ -126,17 +171,14 @@ const findKeyword = (children: React.ReactNode[]): string => {
 const CommandItem = ({
     children,
     className,
+    value,
     ...props
-}: React.LiHTMLAttributes<HTMLLIElement>) => {
-    const { value, setValue, type } = useContext(CommandCtx)
-    const keyword = useMemo(() => {
-        const itemValueArray = React.Children.toArray(children)
-        const found = findKeyword(itemValueArray)
-        return found
-    }, [])
-    const isActive =
-        (keyword === value && type === 'single') ||
-        (Array.isArray(value) && value.includes(keyword))
+}: React.LiHTMLAttributes<HTMLLIElement> & {
+    value: string
+}) => {
+    value = value.toString()
+    const { select, findIsActive } = useContext(CommandCtx)
+    const isActive = findIsActive(value)
     return (
         <li
             {...props}
@@ -145,24 +187,9 @@ const CommandItem = ({
                 'cursor-pointer',
                 className
             )}
-            onClick={() => {
-                if (type === 'single') {
-                    if (keyword === value) setValue('')
-                    else setValue(keyword as string)
-                } else {
-                    if (Array.isArray(value)) {
-                        if (value.includes(keyword as string)) {
-                            setValue(value.filter((item) => item !== keyword))
-                        } else {
-                            setValue([...value, keyword as string])
-                        }
-                    } else {
-                        setValue([keyword as string])
-                    }
-                }
-            }}
+            onClick={() => select(value)}
             data-checked={isActive ? 'on' : 'off'}
-            aria-keyword={keyword}
+            data-value={value}
         >
             {children}
             <AnimatePresence>

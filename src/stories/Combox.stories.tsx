@@ -33,14 +33,14 @@ export const Primary: Story = {
         <Panel>
             <Panel.StyledTrigger>Search options 🔍</Panel.StyledTrigger>
             <Panel.Content className="list">
-                <Command type="multiple" defaultValue={['Item 2']}>
+                <Command type="single" defaultValue="Item 2">
                     <Command.Input placeholder="Search..." />
                     <Command.Group>
-                        <Command.Item>Item 1 😊</Command.Item>
-                        <Command.Item>Item 2</Command.Item>
-                        <Command.Item>Item 3</Command.Item>
-                        <Command.Item>Item 4</Command.Item>
-                        <Command.Item>Item 5</Command.Item>
+                        <Command.Item value="Item 1">Item 1 😊</Command.Item>
+                        <Command.Item value="Item 2">Item 2</Command.Item>
+                        <Command.Item value="Item 3">Item 3</Command.Item>
+                        <Command.Item value="Item 4">Item 4</Command.Item>
+                        <Command.Item value="Item 5">Item 5</Command.Item>
                     </Command.Group>
                 </Command>
             </Panel.Content>

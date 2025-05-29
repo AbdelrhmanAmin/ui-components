@@ -56,7 +56,7 @@ const Commander = () => {
             <Command type="multiple" defaultValue={['Files']}>
                 <Command.Input placeholder="Search..." />
                 <Command.Group>
-                    <Command.Item>
+                    <Command.Item value="calendar">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="16"
@@ -83,7 +83,7 @@ const Commander = () => {
                         </svg>
                         <span>Calendar</span>
                     </Command.Item>
-                    <Command.Item>
+                    <Command.Item value="calculator">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="16"
@@ -104,28 +104,22 @@ const Commander = () => {
                         </svg>
                         <span>Calculator</span>
                     </Command.Item>
-                    <Command.Item>DUPLICATED_TEXT_BUT_UNIQUE_ID</Command.Item>
-                    <Command.Item>DUPLICATED_TEXT_BUT_UNIQUE_ID</Command.Item>
-                    <Command.Item>DUPLICATED_TEXT_BUT_UNIQUE_ID</Command.Item>
-                    <Command.Item>DUPLICATED_TEXT_BUT_UNIQUE_ID</Command.Item>
-                    <Command.Item>DUPLICATED_TEXT_BUT_UNIQUE_ID</Command.Item>
-                    <Command.Item>DUPLICATED_TEXT_BUT_UNIQUE_ID</Command.Item>
-                    <Command.Item>Connections</Command.Item>
-                    <Command.Item>Customer Support</Command.Item>
-                    <Command.Item>Documents</Command.Item>
-                    <Command.Item>Downloads</Command.Item>
-                    <Command.Item>Files</Command.Item>
-                    <Command.Item>Folder</Command.Item>
-                    <Command.Item>Gallery</Command.Item>
-                    <Command.Item>Images</Command.Item>
-                    <Command.Item>Mail</Command.Item>
-                    <Command.Item>Music</Command.Item>
-                    <Command.Item>Notes</Command.Item>
-                    <Command.Item>Photos</Command.Item>
-                    <Command.Item>Reminders</Command.Item>
-                    <Command.Item>Settings</Command.Item>
-                    <Command.Item>Shortcuts</Command.Item>
-                    <Command.Item>System</Command.Item>
+                    <Command.Item value="Connections">Connections</Command.Item>
+                    <Command.Item value="Customer Support">Customer Support</Command.Item>
+                    <Command.Item value="Documents">Documents</Command.Item>
+                    <Command.Item value="Downloads">Downloads</Command.Item>
+                    <Command.Item value="Files">Files</Command.Item>
+                    <Command.Item value="Folder">Folder</Command.Item>
+                    <Command.Item value="Gallery">Gallery</Command.Item>
+                    <Command.Item value="Images">Images</Command.Item>
+                    <Command.Item value="Mail">Mail</Command.Item>
+                    <Command.Item value="Music">Music</Command.Item>
+                    <Command.Item value="Notes">Notes</Command.Item>
+                    <Command.Item value="Photos">Photos</Command.Item>
+                    <Command.Item value="Reminders">Reminders</Command.Item>
+                    <Command.Item value="Settings">Settings</Command.Item>
+                    <Command.Item value="Shortcuts">Shortcuts</Command.Item>
+                    <Command.Item value="System">System</Command.Item>
                 </Command.Group>
             </Command>
         </Modal.Content>

@@ -15,10 +15,10 @@ type IsPropsControlled<Type extends 'single' | 'multiple', S, M> =
           defaultValue?: Type extends 'single' ? S : M // optional because it's uncontrolled
       }
 
-export type PropsMappedByType<S = string, M = string[]> =
+export type PropsMappedByType<SingleType = string, MultipleType = string[]> =
     | ({
           type: 'single'
-      } & IsPropsControlled<'single', S, M>)
+      } & IsPropsControlled<'single', SingleType, MultipleType>)
     | ({
           type: 'multiple'
-      } & IsPropsControlled<'multiple', S, M>)
+      } & IsPropsControlled<'multiple', SingleType, MultipleType>)
