@@ -52,18 +52,21 @@ const PanelTriggerStyled = ({
         <PanelTriggerBase
             as={Button}
             className={cn(
-                'inline-flex items-center gap-2 cursor-pointer',
-                'p-2 bg-gray-600 text-white font-medium rounded-md',
+                'inline-flex relative !justify-start items-center gap-1 cursor-pointer',
+                'p-2 bg-gray-600 pr-12 text-white font-medium rounded-md',
                 className
             )}
             {...props}
         >
             {children}
             <Collapse
-                className={cn('ml-2 transition-opacity', {
-                    'opacity-50': !isOpen,
-                    'opacity-100': isOpen,
-                })}
+                className={cn(
+                    'right-2 top-1/2 -translate-y-1/2 absolute transition-opacity',
+                    {
+                        'opacity-50': !isOpen,
+                        'opacity-100': isOpen,
+                    }
+                )}
             />
         </PanelTriggerBase>
     )

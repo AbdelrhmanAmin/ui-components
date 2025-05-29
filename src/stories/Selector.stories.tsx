@@ -50,9 +50,8 @@ export const Primary: Story = {
                 { value: '17', label: 'Option 17' },
                 { value: '18', label: 'Option 18' },
                 { value: '19', label: 'Option 19' },
-                { value: '20', label: 'Option 20' }
+                { value: '20', label: 'Option 20' },
             ]}
-            // onChange={() => {}}
             type="multiple"
         />
     ),

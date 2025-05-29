@@ -56,9 +56,9 @@ const Command = <T,>({
         // setup the value
         if (!picks) {
             if (type === 'single') {
-                submit(pick)
+                return submit(pick)
             } else {
-                submit([pick])
+                return submit([pick])
             }
         }
         if (type === 'single') {
