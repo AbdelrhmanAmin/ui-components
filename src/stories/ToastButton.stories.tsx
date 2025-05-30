@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import Button from '../components/ui/Button'
 import { toast } from '../components/ui/Toast'
+import { useState } from 'react'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -71,4 +72,40 @@ export const Primary: Story = {
             {children}
         </Button>
     ),
+}
+
+export const Toaster: Story = {
+    name: 'Toaster',
+    render: () => <App />,
+}
+
+function App() {
+    const [reverseOrder, setReverseOrder] = useState(false)
+    const [lastType, setLastType] = useState<
+        'success' | 'error' | 'info' | undefined
+    >(undefined)
+    const generateRandomToast = () => {
+        const types = ['success', 'error', 'info']
+        // Never use the same type twice in a row
+        let randomType = types[Math.floor(Math.random() * types.length)]
+        if (randomType === lastType) {
+            randomType = types[(types.indexOf(randomType) + 1) % types.length]
+        }
+        setLastType(randomType as 'success' | 'error' | 'info')
+
+        toast('Hello, world!', {
+            duration: 10000,
+            type: randomType as 'success' | 'error' | 'info',
+            position: 'top-center',
+        })
+    }
+    return (
+        <div className="min-h-screen flex items-center justify-center">
+            Please run `npm run storybook` to view the components.
+            <Button onClick={generateRandomToast}>Click me</Button>
+            <Button onClick={() => setReverseOrder(!reverseOrder)}>
+                Reverse Order
+            </Button>
+        </div>
+    )
 }

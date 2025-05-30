@@ -57,9 +57,9 @@ export const Primary: Story = {
             onMenuEnd={() => {
                 toast('scrolled to bottom', {
                     duration: 500,
+                    position: 'top-right',
                 })
             }}
-            disabled
         />
     ),
 }

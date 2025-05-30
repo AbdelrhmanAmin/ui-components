@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/react'
 import '../src/index.css'
 import 'tailwindcss/tailwind.css'
 import Toaster from '../src/components/ui/Toast'
+import React from 'react'
 const preview: Preview = {
     parameters: {
         controls: {
