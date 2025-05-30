@@ -3,6 +3,19 @@ export type Shared = {
     children: React.ReactNode
 }
 
+export type IsSelectTypeControlled<Data> =
+    | {
+          type: 'single' | 'multiple'
+          value: Data[]
+          onChange: (val: Data[]) => void
+          defaultValue?: Data[]
+      }
+    | {
+          type: 'single' | 'multiple'
+          value?: never
+          onChange?: never
+          defaultValue?: Data[]
+      }
 type IsPropsControlled<Type extends 'single' | 'multiple', S, M> =
     | {
           value: Type extends 'single' ? S : M

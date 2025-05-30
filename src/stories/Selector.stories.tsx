@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import Select from '../components/ui/Select'
+import { toast } from '../components/ui/Toast'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -53,6 +54,12 @@ export const Primary: Story = {
                 { value: '20', label: 'Option 20' },
             ]}
             type="multiple"
+            onMenuEnd={() => {
+                toast('scrolled to bottom', {
+                    duration: 500,
+                })
+            }}
+            disabled
         />
     ),
 }

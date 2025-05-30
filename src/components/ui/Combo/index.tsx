@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import React, { createContext, useContext, useMemo, useState } from 'react'
 import cn from '../../../utils/cn'
 import useControllableState from '../../utils/useControllableState'
-import { PropsMappedByType } from '../../types'
+import { IsSelectTypeControlled } from '../../types'
 import comparison, { findInArray } from '../../utils/comparison'
 
 interface CommandContext<T> {
@@ -31,7 +31,7 @@ const Command = <T,>({
     type = 'single',
 }: {
     children: React.ReactNode
-} & PropsMappedByType<T, T[]>) => {
+} & IsSelectTypeControlled<T>) => {
     const [search, setSearch] = useState('')
     const [picks, submit] = useControllableState<T | T[]>({
         value,
@@ -127,7 +127,10 @@ const findMatchings = (
     })
 }
 
-const CommandGroup = ({ children }: { children: JSX.Element[] }) => {
+const CommandGroup = ({
+    children,
+    ...props
+}: { children: JSX.Element[] } & React.HTMLAttributes<HTMLUListElement>) => {
     const { search } = useContext(CommandCtx)
     const initialChildren = useMemo(() => {
         return React.Children.toArray(children) as JSX.Element[]
@@ -142,7 +145,11 @@ const CommandGroup = ({ children }: { children: JSX.Element[] }) => {
         if (matchings.length === 0) return 'No results found...'
         return matchings
     }, [search])
-    return <ul className="dropdown">{filteredChildren}</ul>
+    return (
+        <ul {...props} className={cn('dropdown', props.className)}>
+            {filteredChildren}
+        </ul>
+    )
 }
 
 const findKeyword = (children: React.ReactNode[]): string => {

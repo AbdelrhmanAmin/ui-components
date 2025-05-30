@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react'
-import { PropsMappedByType } from '../../types'
 import Command from '../Combo'
 import Panel from '../Panel'
 import Badge from '../Badge'
@@ -8,8 +7,6 @@ type Option = {
     label: string
     value: string
 }
-
-type MappedProps = PropsMappedByType<string, string[]>
 
 type IsControlled =
     | {
@@ -23,19 +20,23 @@ type IsControlled =
 type Interface = {
     options: Option[]
     type?: 'single' | 'multiple'
+    onMenuEnd?: () => void
+    disabled?: boolean
 } & IsControlled
 
 const Select = ({
     options,
     type = 'single',
     picks: outerPicks,
+    onMenuEnd,
+    disabled,
     ...props
 }: Interface) => {
-    const isControlled = props.onChange !== undefined
     const [picks, setPicks] = useState<string[]>(
         Array.isArray(outerPicks) ? outerPicks : []
     )
     const submit = (newPicks: string[]) => {
+        const isControlled = props.onChange !== undefined
         if (isControlled) {
             props.onChange?.(newPicks)
         } else {
@@ -55,7 +56,10 @@ const Select = ({
     }, [picks])
     return (
         <Panel>
-            <Panel.StyledTrigger className="w-96 text-left text-muted bg-gray-600/50 truncate">
+            <Panel.StyledTrigger
+                className="w-96 text-left text-muted bg-gray-600/50 truncate"
+                disabled={disabled}
+            >
                 {Array.isArray(label)
                     ? label.map((l) => (
                           <Badge
@@ -76,16 +80,24 @@ const Select = ({
             </Panel.StyledTrigger>
             <Panel.Content className="list">
                 <Command
-                    {...({
-                        type,
-                        value: picks,
-                        onChange: (newPicks: string[]) => {
-                            submit(newPicks)
-                        },
-                    } as MappedProps)}
+                    type={type}
+                    value={picks}
+                    onChange={(newPicks: string[]) => {
+                        submit(newPicks)
+                    }}
                 >
                     <Command.Input placeholder="Search..." />
-                    <Command.Group>
+                    <Command.Group
+                        onScroll={(e) => {
+                            const target = e.target as HTMLElement
+                            if (
+                                target.scrollTop + target.clientHeight >=
+                                target.scrollHeight
+                            ) {
+                                onMenuEnd?.()
+                            }
+                        }}
+                    >
                         {options.map((option) => (
                             <Command.Item
                                 key={option.value}

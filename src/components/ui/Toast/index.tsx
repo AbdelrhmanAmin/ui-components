@@ -53,9 +53,11 @@ const toastStore = createStore<ToastStore>((set) => ({
         })),
 }))
 
+type ToastOptions = Partial<Pick<Toast, 'type' | 'duration'>>
+
 export const toast = (
     message: string,
-    options: Pick<Toast, 'type' | 'duration'> = {
+    options: ToastOptions = {
         type: defaultToastType,
         duration: defaultToastDuration,
     }

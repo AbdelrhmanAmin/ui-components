@@ -46,7 +46,9 @@ const PanelTriggerStyled = ({
     children,
     className,
     ...props
-}: React.HTMLAttributes<HTMLElement>) => {
+}: React.HTMLAttributes<HTMLElement> & {
+    disabled?: boolean
+}) => {
     const { isOpen } = useTrigger()
     return (
         <PanelTriggerBase
