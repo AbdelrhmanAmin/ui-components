@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import Button from '../components/ui/Button'
-import { toast } from '../components/ui/Toast'
+import Toaster, { toast } from '../components/ui/Toast'
 import { useState } from 'react'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -16,6 +16,7 @@ const meta = {
         toastVariant: 'info',
         toastMessage: 'Button clicked!',
         toastDuration: 3000,
+        hasLocalToaster: true,
     },
     argTypes: {
         rippleConfig: { table: { disable: true } },
@@ -48,6 +49,14 @@ type Story = StoryObj<typeof meta>
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
     name: 'Toast + Button',
+    decorators: [
+        (Story) => (
+            <>
+                <Story />
+                <Toaster />
+            </>
+        ),
+    ],
     render: ({
         children,
         isLoading,
@@ -74,7 +83,7 @@ export const Primary: Story = {
     ),
 }
 
-export const Toaster: Story = {
+export const ToasterStory: Story = {
     name: 'Toaster',
     render: () => <App />,
 }
@@ -106,6 +115,7 @@ function App() {
             <Button onClick={() => setReverseOrder(!reverseOrder)}>
                 Reverse Order
             </Button>
+            <Toaster reverseOrder={reverseOrder} />
         </div>
     )
 }

@@ -12,6 +12,7 @@ interface CommandContext<T> {
     select: (value: T) => void
     type: 'single' | 'multiple'
     findIsActive: (pick: T) => boolean
+    disabled: boolean
 }
 
 const CommandCtx = createContext<CommandContext<any>>({
@@ -21,6 +22,7 @@ const CommandCtx = createContext<CommandContext<any>>({
     select: () => {},
     type: 'multiple',
     findIsActive: () => false,
+    disabled: false,
 })
 
 const Command = <T,>({
@@ -29,8 +31,10 @@ const Command = <T,>({
     value,
     defaultValue,
     type = 'single',
+    disabled = false,
 }: {
     children: React.ReactNode
+    disabled?: boolean
 } & IsSelectTypeControlled<T>) => {
     const [search, setSearch] = useState('')
     const [picks, submit] = useControllableState<T | T[]>({
@@ -86,6 +90,7 @@ const Command = <T,>({
                 select,
                 type,
                 findIsActive,
+                disabled,
             }}
         >
             {children}
@@ -96,14 +101,18 @@ const Command = <T,>({
 const CommandInput = (
     inputProps: React.InputHTMLAttributes<HTMLInputElement>
 ) => {
-    const { search, setSearch } = useContext(CommandCtx)
+    const { search, setSearch, disabled } = useContext(CommandCtx)
     return (
         <input
             {...inputProps}
             value={search}
             autoFocus
             onChange={(e) => setSearch(e.target.value)}
-            className="min-w-[280px] w-full p-2 rounded-md rounded-b-none border-b border-border bg-background focus:outline-none"
+            className={cn(
+                'min-w-[280px] w-full p-2 rounded-md rounded-b-none border-b border-border bg-background focus:outline-none',
+                (inputProps.disabled || disabled) &&
+                    'opacity-50 pointer-events-none'
+            )}
         />
     )
 }
@@ -131,7 +140,7 @@ const CommandGroup = ({
     children,
     ...props
 }: { children: JSX.Element[] } & React.HTMLAttributes<HTMLUListElement>) => {
-    const { search } = useContext(CommandCtx)
+    const { search, disabled } = useContext(CommandCtx)
     const initialChildren = useMemo(() => {
         return React.Children.toArray(children) as JSX.Element[]
     }, [])
@@ -146,7 +155,14 @@ const CommandGroup = ({
         return matchings
     }, [search])
     return (
-        <ul {...props} className={cn('dropdown', props.className)}>
+        <ul
+            {...props}
+            className={cn(
+                'dropdown',
+                props.className,
+                disabled && 'opacity-50 pointer-events-none'
+            )}
+        >
             {filteredChildren}
         </ul>
     )
@@ -184,7 +200,7 @@ const CommandItem = ({
     value: string
 }) => {
     value = value.toString()
-    const { select, findIsActive } = useContext(CommandCtx)
+    const { select, findIsActive, disabled } = useContext(CommandCtx)
     const isActive = findIsActive(value)
     return (
         <li
@@ -192,7 +208,8 @@ const CommandItem = ({
             className={cn(
                 'item flex items-center',
                 'cursor-pointer',
-                className
+                className,
+                disabled && 'opacity-50 pointer-events-none'
             )}
             onClick={() => select(value)}
             data-checked={isActive ? 'on' : 'off'}

@@ -85,6 +85,7 @@ const Select = ({
                     onChange={(newPicks: string[]) => {
                         submit(newPicks)
                     }}
+                    disabled={disabled}
                 >
                     <Command.Input placeholder="Search..." />
                     <Command.Group

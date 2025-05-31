@@ -13,7 +13,7 @@ const preview: Preview = {
         },
     },
     decorators: [
-        (Story) => (
+        (Story, { args }) => (
             <div
                 style={{
                     display: 'flex',
@@ -28,7 +28,7 @@ const preview: Preview = {
                 }}
             >
                 <Story />
-                <Toaster />
+                {!args.hasLocalToaster && <Toaster />}
             </div>
         ),
     ],

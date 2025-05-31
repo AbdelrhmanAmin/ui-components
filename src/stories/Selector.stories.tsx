@@ -6,20 +6,24 @@ import { toast } from '../components/ui/Toast'
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
     title: 'Selector',
-    decorators: [
-        (Story) => (
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100vh',
-                }}
-            >
-                <Story />
-            </div>
-        ),
-    ],
+    component: Select,
+    argTypes: {
+        type: {
+            control: { type: 'select' },
+            options: ['single', 'multiple'],
+            defaultValue: 'single',
+        },
+        disabled: {
+            control: { type: 'boolean' },
+            defaultValue: false,
+        },
+        onMenuEnd: {
+            table: { disable: true },
+        },
+        options: {
+            table: { disable: true },
+        },
+    },
 } as Meta
 
 export default meta
@@ -29,7 +33,7 @@ type Story = StoryObj<typeof meta>
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
     name: 'Selector',
-    render: () => (
+    render: (args) => (
         <Select
             options={[
                 { value: '1', label: 'Option 1' },
@@ -53,7 +57,8 @@ export const Primary: Story = {
                 { value: '19', label: 'Option 19' },
                 { value: '20', label: 'Option 20' },
             ]}
-            type="multiple"
+            type={args.type}
+            disabled={args.disabled}
             onMenuEnd={() => {
                 toast('scrolled to bottom', {
                     duration: 500,
