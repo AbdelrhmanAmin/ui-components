@@ -53,10 +53,21 @@ type Story = StoryObj<typeof meta>
 
 export const ToasterStory: Story = {
     name: 'Toaster',
-    render: () => <App />,
+    render: (args) => {
+        const { position, duration, type } = args;
+        return <App position={position} duration={duration} type={type} />;
+    },
 }
 
-function App() {
+function App({
+    position,
+    duration,
+    type,
+}: {
+    position: 'top-center' | 'top-right' | 'top-left' | 'bottom-center' | 'bottom-right' | 'bottom-left'
+    duration: number
+    type: 'success' | 'error' | 'info'
+}) {
     const [reverseOrder, setReverseOrder] = useState(false)
     const [lastType, setLastType] = useState<
         'success' | 'error' | 'info' | undefined
@@ -88,8 +99,19 @@ function App() {
         })
     }
     return (
-        <div>
-            <Button onClick={generateRandomToast}>Click me</Button>
+        <div className="flex gap-4">
+            <Button
+                onClick={() =>
+                    toast('Hello, world!', {
+                        position,
+                        duration,
+                        type,
+                    })
+                }
+            >
+                Story Toast
+            </Button>
+            <Button onClick={generateRandomToast}>Random Toast</Button>
             <Button onClick={() => setReverseOrder(!reverseOrder)}>
                 Reverse Order
             </Button>
