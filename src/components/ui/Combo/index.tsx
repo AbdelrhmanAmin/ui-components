@@ -37,39 +37,27 @@ const Command = <T,>({
     disabled?: boolean
 } & IsSelectTypeControlled<T>) => {
     const [search, setSearch] = useState('')
-    const [picks, submit] = useControllableState<T | T[]>({
+    const [picks, submit] = useControllableState<T[]>({
         value,
         defaultValue: defaultValue,
         onChange,
     })
     const findIsActive = (pick: T) => {
-        if (
-            !picks ||
-            picks === '' ||
-            (Array.isArray(picks) && picks.length === 0)
-        )
-            return false
-        if (type === 'single') {
-            return comparison(pick, picks)
-        } else {
-            return findInArray(picks as T[], pick)
-        }
+        if (!picks || (Array.isArray(picks) && picks.length === 0)) return false
+
+        return findInArray(picks as T[], pick)
     }
     const select = (pick: T) => {
         const toRemove = findIsActive(pick)
         // setup the value
         if (!picks) {
-            if (type === 'single') {
-                return submit(pick)
-            } else {
-                return submit([pick])
-            }
+            return submit([pick])
         }
         if (type === 'single') {
             if (toRemove) {
-                submit('' as T)
+                submit([])
             } else {
-                submit(pick)
+                submit([pick])
             }
         } else {
             if (Array.isArray(picks)) {
