@@ -4,6 +4,7 @@ import Toggle, { Checkbox } from '../components/ui/Toggle'
 import Group from '../components/ui/Toggle/Group'
 import { useState } from 'react'
 import cn from '../utils/cn'
+import Switch from '../components/ui/Toggle/Switch'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -42,6 +43,16 @@ export const CheckboxStory: Story = {
     name: 'Checkbox',
     render: () => (
         <Checkbox markClassName="data-[checked=on]:bg-red-500">Active</Checkbox>
+    ),
+}
+
+export const SwitchStory: Story = {
+    name: 'Switch',
+    render: () => (
+        <div className="flex items-center gap-2 text-accent font-semibold">
+            <Switch id="switch" />
+            <label htmlFor="switch">Mode</label>
+        </div>
     ),
 }
 

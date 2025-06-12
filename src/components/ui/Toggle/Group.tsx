@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, { createContext } from 'react'
 import Toggle, { SharedMarkProps, TOGGLE_BASE, ToggleBaseProps } from '.'
 import { motion } from 'motion/react'
@@ -93,7 +94,7 @@ const Group = ({
 
     const handleToggle = (newPick: string) => {
         if (type === 'single') {
-            setPicks(newPick as string)
+            setPicks(newPick)
         } else {
             if (!picks || !Array.isArray(picks)) void setPicks([newPick])
             if (Array.isArray(picks)) {

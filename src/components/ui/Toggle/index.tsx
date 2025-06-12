@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Children, memo } from 'react'
 import cn from '../../../utils/cn'
 import { AnimatePresence, motion } from 'motion/react'
@@ -38,6 +39,7 @@ const traverseChildren = (
                         'data-checked': checked ? 'on' : 'off',
                         ...child.props,
                         children: traverseChildren(
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                             child.props.children,
                             checked,
                             depth + 1
@@ -53,6 +55,7 @@ const traverseChildren = (
         return child
     })
 }
+// eslint-disable-next-line react/display-name
 const DataAttributeDecorator = memo(
     ({
         children,
