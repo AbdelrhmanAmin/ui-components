@@ -4,28 +4,10 @@ import FloatingPanel from '../Panel/FloatingPanel'
 import { useRef } from 'react'
 import useMouseLeave from '../../utils/useMouseLeave'
 
-const Menubar = () => {
+const Menubar = ({ children }: { children: React.ReactNode }) => {
     return (
         <Tabs className="flex items-center border border-border bg-background rounded-md p-1 gap-x-1 w-fit">
-            <MenubarItem title="File">
-                <div className="item">New</div>
-                <div className="item">Open</div>
-                <div className="item">Save</div>
-                <div className="item">Save As</div>
-            </MenubarItem>
-            <MenubarItem title="Edit">
-                <div className="item">Undo</div>
-                <div className="item">Redo</div>
-                <div className="item">Cut</div>
-                <div className="item">Copy</div>
-                <div className="item">Paste</div>
-                <div className="item">Delete</div>
-            </MenubarItem>
-            <MenubarItem title="View">
-                <div className="item">Zoom In</div>
-                <div className="item">Zoom Out</div>
-                <div className="item">Reset Zoom</div>
-            </MenubarItem>
+            {children}
         </Tabs>
     )
 }
@@ -58,5 +40,7 @@ const MenubarItem = ({
         </div>
     )
 }
+
+Menubar.Item = MenubarItem
 
 export default Menubar
