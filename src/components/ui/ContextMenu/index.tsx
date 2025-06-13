@@ -35,7 +35,7 @@ const Trigger: React.FC<
 
     useMouseLeave({
         ref: containerRef,
-        setOpen: setIsOpen,
+        onClick: () => setIsOpen(false),
         disabled: !isSub,
     })
 

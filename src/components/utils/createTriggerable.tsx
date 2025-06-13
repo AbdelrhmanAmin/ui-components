@@ -10,13 +10,10 @@ type API = {
     containerRef: React.RefObject<HTMLDivElement> | null
 }
 
-type TriggerableChildren = [
-    JSX.Element & { type: { displayName: 'Triggerable.Trigger' } },
-    JSX.Element & { type: { displayName: 'Triggerable.Content' } },
-]
+
 
 type RootProps = {
-    children: TriggerableChildren
+    children: React.ReactNode
     isOpenByDefault?: boolean
     className?: string
 }

@@ -2,6 +2,7 @@ import createTriggerable from '../../utils/createTriggerable'
 import { AnimatePresence, motion } from 'motion/react'
 import useClickOutside from '../../utils/useClickOutside'
 import cn from '../../../utils/cn'
+import Overlay from '../Overlay'
 
 const { createRoot, Trigger, useTrigger } = createTriggerable('Modal')
 
@@ -13,25 +14,18 @@ const ModalContainer = ({
     const { ref } = useClickOutside(setIsOpen)
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <motion.div
-                    animate={isOpen ? 'visible' : 'hidden'}
-                    initial="hidden"
-                    exit="hidden"
-                    variants={{
-                        visible: { opacity: 1 },
-                        hidden: { opacity: 0 },
-                    }}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md"
-                    tabIndex={-1}
-                >
+        <Overlay isOpen={isOpen}>
+            <AnimatePresence>
+                {isOpen && (
                     <div ref={ref} tabIndex={-1} className="p-8">
                         <motion.div
                             variants={{
                                 visible: { opacity: 1, scale: 1 },
                                 hidden: { opacity: 0, scale: 0.8 },
                             }}
+                            initial="hidden"
+                            animate="visible"
+                            exit="hidden"
                             className={cn(
                                 'flex flex-col w-fit',
                                 'bg-[#2E2E2E] !max-h-[calc(100vh-20px)] sm:max-h-[90%] min-h-[170px] shadow-md shadow-black border border-[#484848]',
@@ -41,9 +35,9 @@ const ModalContainer = ({
                             {children}
                         </motion.div>
                     </div>
-                </motion.div>
-            )}
-        </AnimatePresence>
+                )}
+            </AnimatePresence>
+        </Overlay>
     )
 }
 

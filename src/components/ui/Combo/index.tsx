@@ -45,7 +45,7 @@ const Command = <T,>({
     const findIsActive = (pick: T) => {
         if (!picks || (Array.isArray(picks) && picks.length === 0)) return false
 
-        return findInArray(picks as T[], pick)
+        return findInArray(picks, pick)
     }
     const select = (pick: T) => {
         const toRemove = findIsActive(pick)
@@ -135,10 +135,7 @@ const CommandGroup = ({
     // traverse and nest the children till you find the command item
     const filteredChildren = useMemo(() => {
         if (!search) return initialChildren
-        const matchings = findMatchings(
-            initialChildren as JSX.Element[],
-            search
-        )
+        const matchings = findMatchings(initialChildren, search)
         if (matchings.length === 0) return 'No results found...'
         return matchings
     }, [search])
