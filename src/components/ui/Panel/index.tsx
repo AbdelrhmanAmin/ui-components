@@ -5,9 +5,7 @@ import Button from '../Button'
 import { AnimatePresence, motion } from 'motion/react'
 import Collapse from '../../icons/Collapse'
 import useMouseLeave from '../../utils/useMouseLeave'
-
-export type PositionY = 'top' | 'bottom'
-export type PositionX = 'left' | 'right'
+export type Position = 'top' | 'bottom' | 'left' | 'right'
 
 const { createRoot, Trigger, useTrigger } = createTriggerable('Panel')
 
@@ -75,18 +73,19 @@ const PanelTriggerStyled = ({
 }
 
 const PanelContent = ({
-    positionX = 'left',
-    positionY = 'bottom',
     children,
     className,
+    position = 'bottom',
+    ...props
 }: {
-    positionX?: PositionX
-    positionY?: PositionY
-    children: React.ReactNode
     className?: string
+    children: React.ReactNode
+    position?: Position
+    gutter?: number
 }) => {
     const { isOpen } = useTrigger()
-    const stylePosition = handlePosition(positionX, positionY)
+
+    const stylePosition = handlePosition(position, props.gutter)
     return (
         <AnimatePresence>
             {isOpen && (
@@ -107,19 +106,18 @@ const PanelContent = ({
     )
 }
 
-const handlePosition = (x: PositionX, y: PositionY) => {
-    const position = {}
-    if (x === 'left') {
-        Object.assign(position, { left: '0' })
-    } else if (x === 'right') {
-        Object.assign(position, { right: '0' })
+const handlePosition = (position: Position, gutter: number = 0) => {
+    const style = {}
+    if (position.includes('top')) {
+        Object.assign(style, { bottom: `calc(100% + ${gutter}px)` })
+    } else if (position.includes('bottom')) {
+        Object.assign(style, { top: `calc(100% + ${gutter}px)` })
+    } else if (position.includes('left')) {
+        Object.assign(style, { right: `calc(100% + ${gutter}px)`, top: 0 })
+    } else if (position.includes('right')) {
+        Object.assign(style, { left: `calc(100% + ${gutter}px)`, top: 0 })
     }
-    if (y === 'top') {
-        Object.assign(position, { bottom: '100%' })
-    } else if (y === 'bottom') {
-        Object.assign(position, { top: '100%' })
-    }
-    return position
+    return style
 }
 
 const Panel = Object.assign(

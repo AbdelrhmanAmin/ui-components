@@ -6,17 +6,16 @@ import Button from '../components/ui/Button'
 const meta = {
     title: 'Dropdown',
     argTypes: {
-        positionX: {
+        position: {
             control: {
                 type: 'inline-radio',
             },
-            options: ['left', 'right'],
+            options: ['top', 'bottom', 'left', 'right'],
         },
-        positionY: {
+        gutter: {
             control: {
-                type: 'inline-radio',
+                type: 'number',
             },
-            options: ['top', 'bottom'],
         },
     },
     decorators: [
@@ -42,10 +41,10 @@ type Story = StoryObj<typeof meta>
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
     name: 'Dropdown',
-    render: ({ positionX, positionY }) => (
+    render: ({ position, gutter }) => (
         <Panel>
             <Panel.StyledTrigger>Open</Panel.StyledTrigger>
-            <Panel.Content positionX={positionX} positionY={positionY}>
+            <Panel.Content position={position} gutter={gutter}>
                 <div
                     style={{
                         display: 'flex',
