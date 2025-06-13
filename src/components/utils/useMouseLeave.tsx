@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 
 const useMouseLeave = ({
     ref,
-    setOpen,
+    onClick,
     disabled = false,
 }: {
     ref: React.RefObject<HTMLElement> | null
-    setOpen: Function
+    onClick: () => void
     disabled?: boolean
 }) => {
     useEffect(() => {
@@ -14,7 +14,7 @@ const useMouseLeave = ({
         if (!currentRef || disabled) return
         const handleMouseLeave = (e: MouseEvent) => {
             if (!currentRef.contains(e.relatedTarget as Node)) {
-                setOpen(false)
+                onClick()
             }
         }
         currentRef.addEventListener('mouseleave', handleMouseLeave)

@@ -1,3 +1,4 @@
+import cn from 'classnames'
 import { createContext, useContext, useState } from 'react'
 import DataAttributeDecorator from '../../utils/DataAttributeDecorater'
 const CTX = createContext<{
@@ -29,14 +30,27 @@ const Tabs = ({
 const TabsTrigger = ({
     value,
     children,
+    className,
+    isHoverable,
 }: {
     value: string
     children: React.ReactNode
+    className?: string
+    isHoverable?: boolean
 }) => {
     const { setTab, activeTab } = useContext(CTX)
+
     return (
         <DataAttributeDecorator checked={activeTab === value}>
-            <button onClick={() => setTab(value)}>{children}</button>
+            <button
+                onClick={() => setTab(value)}
+                className={cn(className)}
+                {...(isHoverable && {
+                    onMouseEnter: () => setTab(value),
+                })}
+            >
+                {children}
+            </button>
         </DataAttributeDecorator>
     )
 }
@@ -61,5 +75,6 @@ const TabsContent = ({
 
 Tabs.Trigger = TabsTrigger
 Tabs.Content = TabsContent
+Tabs.CTX = CTX
 
 export default Tabs

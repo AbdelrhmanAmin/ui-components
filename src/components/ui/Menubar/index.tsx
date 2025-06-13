@@ -1,8 +1,12 @@
-import Panel from '../Panel'
+import { useContext } from 'react'
+import Tabs from '../Tabs'
+import FloatingPanel from '../Panel/FloatingPanel'
+import { useRef } from 'react'
+import useMouseLeave from '../../utils/useMouseLeave'
 
 const Menubar = () => {
     return (
-        <div className="flex items-center border border-border bg-background rounded-md p-1 gap-x-1 w-fit">
+        <Tabs className="flex items-center border border-border bg-background rounded-md p-1 gap-x-1 w-fit">
             <MenubarItem title="File">
                 <div className="item">New</div>
                 <div className="item">Open</div>
@@ -22,7 +26,7 @@ const Menubar = () => {
                 <div className="item">Zoom Out</div>
                 <div className="item">Reset Zoom</div>
             </MenubarItem>
-        </div>
+        </Tabs>
     )
 }
 
@@ -33,16 +37,25 @@ const MenubarItem = ({
     children: React.ReactNode
     title: string
 }) => {
+    const { activeTab, setTab } = useContext(Tabs.CTX)
+    const ref = useRef<HTMLDivElement>(null)
+    useMouseLeave({
+        ref,
+        onClick: () => setTab(''),
+    })
     return (
-        <Panel>
-            <Panel.Trigger
-                isHoverable
+        <div ref={ref} className="relative">
+            <Tabs.Trigger
+                value={title}
                 className="rounded-md px-3 py-1 hover:bg-[#27272a]"
+                isHoverable
             >
                 {title}
-            </Panel.Trigger>
-            <Panel.Content className="list dropdown">{children}</Panel.Content>
-        </Panel>
+            </Tabs.Trigger>
+            <FloatingPanel isOpen={activeTab === title}>
+                <div className="list dropdown">{children}</div>
+            </FloatingPanel>
+        </div>
     )
 }
 
