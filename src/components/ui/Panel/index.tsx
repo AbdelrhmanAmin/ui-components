@@ -5,6 +5,7 @@ import Button from '../Button'
 import Collapse from '../../icons/Collapse'
 import useMouseLeave from '../../utils/useMouseLeave'
 import FloatingPanel, { FloatingPanelProps } from './FloatingPanel'
+import useClickOutside from '../../utils/useClickOutside'
 export type Position = 'top' | 'bottom' | 'left' | 'right'
 
 const { createRoot, Trigger, useTrigger } = createTriggerable('Panel')
@@ -25,7 +26,7 @@ const PanelTriggerBase = ({
         onClick: () => setIsOpen(false),
         disabled: !isHoverable,
     })
-
+    useClickOutside(setIsOpen, containerRef!)
     return (
         <Trigger
             as={as}

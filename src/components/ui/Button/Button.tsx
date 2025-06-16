@@ -58,14 +58,14 @@ const baseStyle = cn(
 const variantStyles = {
     primary: cn(
         baseStyle,
-        'bg-primary text-white border-border',
+        'bg-primary hover:contrast-75 text-white border-border',
         'active:contrast-150 transition-all',
         'border-2 p-2 rounded-md',
         'font-medium'
     ),
     secondary: cn(
         baseStyle,
-        'bg-white text-black border-border',
+        'bg-white hover:contrast-75 text-black border-border',
         'active:contrast-150 transition-all',
         'border-2 p-2 rounded-md',
         'font-medium'

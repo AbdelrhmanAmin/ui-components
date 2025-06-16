@@ -1,10 +1,14 @@
 import { useEffect, useRef } from 'react'
 
-const useClickOutside = (setOpen: (state: boolean) => void) => {
-    const ref = useRef<HTMLDivElement>(null)
+const useClickOutside = (
+    setOpen: (state: boolean) => void,
+    ref?: React.RefObject<HTMLDivElement>
+) => {
+    const internalRef = useRef<HTMLDivElement>(null)
+    const targetRef = ref || internalRef
     const handleClickOutside = (e: MouseEvent) => {
-        const isContained = ref.current?.contains(e.target as Node)
-        if (ref.current && !isContained) {
+        const isContained = targetRef.current?.contains(e.target as Node)
+        if (targetRef.current && !isContained) {
             setOpen(false)
         }
     }
@@ -14,14 +18,17 @@ const useClickOutside = (setOpen: (state: boolean) => void) => {
         }
     }
     useEffect(() => {
-        document.addEventListener('keydown', handleKeyDown)
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown)
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
+        const ctrl = new AbortController()
+
+        document.addEventListener('keydown', handleKeyDown, {
+            signal: ctrl.signal,
+        })
+        document.addEventListener('mousedown', handleClickOutside, {
+            signal: ctrl.signal,
+        })
+        return () => ctrl.abort()
     }, [])
-    return { ref }
+    return { ref: targetRef }
 }
 
 export default useClickOutside

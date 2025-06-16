@@ -1,6 +1,11 @@
 import cn from 'classnames'
-import React, { createContext, useContext, useMemo, useState } from 'react'
-import useClickOutside from './useClickOutside'
+import React, {
+    createContext,
+    useContext,
+    useMemo,
+    useRef,
+    useState,
+} from 'react'
 
 type API = {
     isOpen: boolean
@@ -9,8 +14,6 @@ type API = {
     setMeta: React.Dispatch<React.SetStateAction<Record<string, any>>>
     containerRef: React.RefObject<HTMLDivElement> | null
 }
-
-
 
 type RootProps = {
     children: React.ReactNode
@@ -73,7 +76,7 @@ const createTriggerable = (displayName: string) => {
     }) => {
         const [open, setOpen] = useState(isOpenByDefault || false)
         const [meta, setMeta] = useState<Record<string, any>>({})
-        const { ref } = useClickOutside(setOpen)
+        const ref = useRef<HTMLDivElement>(null)
         const randomID = useMemo(() => createRandomId(displayName), [])
         return (
             <CTX.Provider

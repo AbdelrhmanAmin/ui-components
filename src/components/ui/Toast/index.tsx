@@ -9,7 +9,7 @@ type Position =
     | 'bottom-left'
     | 'bottom-center'
     | 'bottom-right'
-export type Toast = {
+export type ToastProps = {
     id: UUID
     message: string
     type: 'success' | 'error' | 'info'
@@ -19,6 +19,7 @@ export type Toast = {
 
 type INTERNAL_TOAST_STATE = {
     pausedAt: number | undefined
+    // eslint-disable-next-line no-undef
     timeoutID: NodeJS.Timeout | undefined
     height: number | undefined
     startAt: number | undefined
@@ -27,7 +28,7 @@ type INTERNAL_TOAST_STATE = {
 type UUID = string | number
 export type ToastStore = {
     toasts: {
-        [id: UUID]: Toast
+        [id: UUID]: ToastProps
     }
     internals: {
         [id: UUID]: INTERNAL_TOAST_STATE
@@ -35,7 +36,7 @@ export type ToastStore = {
     isPaused: boolean
     addToast: (
         toast: Omit<
-            Partial<Toast> & {
+            Partial<ToastProps> & {
                 message: string
             },
             'id'
@@ -56,7 +57,7 @@ const getTimeLeft = (startAt: number, duration: number): number => {
 }
 
 const defaultToastDuration = 3000
-const defaultToastType: Toast['type'] = 'info'
+const defaultToastType: ToastProps['type'] = 'info'
 
 const toastStore = createStore<ToastStore>((set, get) => ({
     toasts: {},
@@ -70,7 +71,7 @@ const toastStore = createStore<ToastStore>((set, get) => ({
             ...toast,
             id,
         }
-        let timeoutID: NodeJS.Timeout | undefined
+        let timeoutID: INTERNAL_TOAST_STATE['timeoutID']
         let startAt: number | undefined
         if (instance.duration !== 0 && instance.duration !== Infinity) {
             startAt = Date.now()
@@ -175,7 +176,7 @@ const toastStore = createStore<ToastStore>((set, get) => ({
     },
 }))
 
-const calculateOffset = (toast: Toast, reverseOrder: boolean = false) => {
+const calculateOffset = (toast: ToastProps, reverseOrder: boolean = false) => {
     const toasts = Object.values(toastStore.getState().toasts)
     const samePositionToasts = toasts.filter(
         (t) => t.position === toast.position
@@ -194,7 +195,7 @@ const calculateOffset = (toast: Toast, reverseOrder: boolean = false) => {
     return offset
 }
 
-type ToastOptions = Partial<Pick<Toast, 'type' | 'duration' | 'position'>>
+type ToastOptions = Partial<Pick<ToastProps, 'type' | 'duration' | 'position'>>
 
 export const toast = (
     message: string,
@@ -221,9 +222,8 @@ const getPositionStyle = (position: Position, offset: number) => {
         left: DEFAULT_OFFSET,
         right: DEFAULT_OFFSET,
         display: 'flex',
-        position: 'absolute',
+        position: 'fixed',
         zIndex: 9999,
-        pointerEvents: 'auto',
         ...(isTop ? { top: DEFAULT_OFFSET } : { bottom: DEFAULT_OFFSET }),
         ...(isCenter
             ? { justifyContent: 'center' }
@@ -235,8 +235,8 @@ const getPositionStyle = (position: Position, offset: number) => {
     }
     return style
 }
-
-const DEFAULT_OFFSET = 16
+const isStorybook = import.meta.env.STORYBOOK
+const DEFAULT_OFFSET = isStorybook ? 25 : 16
 const DEFAULT_GUTTER = 10
 
 const Toaster = ({
@@ -296,7 +296,7 @@ const Toaster = ({
 const Toast = ({
     toast,
 }: {
-    toast: Toast
+    toast: ToastProps
 } & React.HTMLAttributes<HTMLDivElement>) => {
     const { updateHeight, removeToast, isPaused, resumeAll } =
         useStore(toastStore)
