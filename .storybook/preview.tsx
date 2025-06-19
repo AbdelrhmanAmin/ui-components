@@ -4,7 +4,6 @@ import 'tailwindcss/tailwind.css'
 import Toaster from '../src/components/ui/Toast'
 import React from 'react'
 import { SidebarProvider } from '../src/components/ui/Sidebar'
-import { AppSidebar } from '../src/components/ui/Sidebar/Sample'
 
 const preview: Preview = {
     parameters: {
@@ -19,7 +18,6 @@ const preview: Preview = {
         (Story, { args }) => (
             <SidebarProvider>
                 <div className="h-svh flex relative scale-100">
-                    <AppSidebar />
                     <div
                         style={{
                             display: 'flex',
