@@ -155,11 +155,6 @@ const GroupTitle = ({
             <Collapsible.Trigger className="!p-0" disabled={isFolded}>
                 <motion.h2
                     variants={{
-                        collapsed: {
-                            width: 0,
-                            opacity: 0,
-                            scaleX: 0.5,
-                        },
                         open: {
                             width: 'auto',
                             opacity: 1,
@@ -171,8 +166,8 @@ const GroupTitle = ({
                             scaleX: 0.5,
                         },
                     }}
-                    initial="collapsed"
-                    animate={isFolded ? 'collapsed' : 'open'}
+                    initial={isFolded ? 'exit' : 'open'}
+                    animate={isFolded ? 'exit' : 'open'}
                     exit="exit"
                     transition={{
                         duration: 0.2,
