@@ -5,6 +5,7 @@ import Button from '../Button'
 import createTriggerable from '../../utils/createTriggerable'
 import Collapse from '../../icons/Collapse'
 import { Shared } from '../../types'
+import useRemovePaddingMarginPostClose from '../../utils/useRemovePaddingMarginPostClose'
 
 const displayName = 'Collapsible'
 
@@ -36,18 +37,23 @@ const TriggerBase = ({
         </Trigger>
     )
 }
+
 const Content = ({ children, className }: Shared) => {
     const { isOpen } = useTrigger()
-
+    const controls = useRemovePaddingMarginPostClose({
+        isOpen,
+        startKey: 'open',
+        endKey: 'exit',
+    })
     return (
         <AnimatePresence>
             <motion.section
                 initial="collapsed"
-                animate={isOpen ? 'open' : 'exit'}
+                animate={controls}
                 exit="exit"
                 variants={{
                     collapsed: {
-                        height: 0,
+                        height: '0px',
                         visibility: 'hidden',
                     },
                     open: {
@@ -55,7 +61,7 @@ const Content = ({ children, className }: Shared) => {
                         visibility: 'visible',
                     },
                     exit: {
-                        height: 0,
+                        height: '0px',
                         visibility: 'hidden',
                     },
                 }}
