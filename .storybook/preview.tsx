@@ -3,7 +3,6 @@ import '../src/index.css'
 import 'tailwindcss/tailwind.css'
 import Toaster from '../src/components/ui/Toast'
 import React from 'react'
-import { SidebarProvider } from '../src/components/ui/Sidebar'
 
 const preview: Preview = {
     parameters: {
@@ -16,26 +15,24 @@ const preview: Preview = {
     },
     decorators: [
         (Story, { args }) => (
-            <SidebarProvider>
-                <div className="h-svh flex relative scale-100">
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: '100%',
-                            width: '100%',
-                            backgroundColor: '#f0f0f0',
-                            position: 'relative',
-                            padding: '20px',
-                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                        }}
-                    >
-                        <Story />
-                        {!args.hasLocalToaster && <Toaster />}
-                    </div>
+            <div className="h-svh flex relative scale-100">
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%',
+                        width: '100%',
+                        backgroundColor: '#f0f0f0',
+                        position: 'relative',
+                        padding: '20px',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    }}
+                >
+                    <Story />
+                    {!args.hasLocalToaster && <Toaster />}
                 </div>
-            </SidebarProvider>
+            </div>
         ),
     ],
 }
